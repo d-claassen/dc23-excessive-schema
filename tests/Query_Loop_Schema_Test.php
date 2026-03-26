@@ -373,7 +373,7 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 	 *
 	 * @return string JSON-LD schema string.
 	 */
-	private function get_schema_json( bool $debug = false ): string {
+	private function get_schema_json( bool $debug = true ): string {
 		ob_start();
 		do_action( 'wpseo_head' );
 		$wpseo_head = ob_get_contents();
