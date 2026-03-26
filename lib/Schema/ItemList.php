@@ -119,4 +119,28 @@ final class ItemList {
 
 		return '';
 	}
+
+    /**
+	 * Resolve post IDs from Query Loop attributes.
+	 *
+	 * Mirrors the block's query attributes into a WP_Query to get the IDs.
+	 *
+	 * @param array $query_attrs Query attributes from the block.
+	 *
+	 * @return array<int> Post IDs.
+	 */
+	private function resolve_post_ids( array $query_attrs ): array {
+		$args = [
+			'post_type'      => $query_attrs['postType'] ?? 'post',
+			'posts_per_page' => $query_attrs['perPage'] ?? get_option( 'posts_per_page' ),
+			'orderby'        => $query_attrs['orderBy'] ?? 'date',
+			'order'          => strtoupper( $query_attrs['order'] ?? 'DESC' ),
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		];
+
+		$query = new \WP_Query( $args );
+
+		return $query->posts;
+	}
 }
