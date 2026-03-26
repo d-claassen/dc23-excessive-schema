@@ -67,6 +67,14 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Override WordPress function that's incompatible with PHPUnit 10+.
+	 *
+	 * @return void
+	 */
+	public function expectDeprecated(): void {
+	}
+
+	/**
 	 * Test Query Loop detection with heading in inner blocks.
 	 *
 	 * @return void
