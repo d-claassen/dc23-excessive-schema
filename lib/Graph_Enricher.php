@@ -69,9 +69,8 @@ final class Graph_Enricher {
 		// Determine connection property based on page type.
 		$property = $this->get_connection_property( $page_type );
 
-		// Build canonical URL and WebPage @id.
-		$canonical  = $context->canonical;
-		$webpage_id = $canonical . '#webpage';
+		// Build canonical URL.
+		$canonical = $context->canonical;
 
 		// Build ItemList nodes and collect references.
 		$additions  = [];
@@ -84,8 +83,15 @@ final class Graph_Enricher {
 		}
 
 		// Find and mutate the WebPage node to add references.
+		// Search by @type instead of @id since we don't know Yoast's exact ID format.
 		foreach ( $graph as &$node ) {
-			if ( ( $node['@id'] ?? '' ) === $webpage_id ) {
+			$node_type = $node['@type'] ?? '';
+
+			// Handle both string and array @type values.
+			$node_types = is_array( $node_type ) ? $node_type : [ $node_type ];
+
+			// Check if this node matches our page type.
+			if ( in_array( $page_type, $node_types, true ) ) {
 				// Merge with existing property if present.
 				$existing         = $node[ $property ] ?? [];
 				$node[ $property ] = array_merge( $existing, $references );
