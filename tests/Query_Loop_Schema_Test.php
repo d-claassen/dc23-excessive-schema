@@ -152,11 +152,10 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 
 		$this->go_to( get_permalink( $page_id ) );
 
-		// Reset sections to ensure clean slate for schema generation.
-		// wpseo_head action will render blocks and collect sections.
-		$this->parser->sections = [];
+		// Render blocks to collect sections (wpseo_head doesn't render content).
+		do_blocks( get_post_field( 'post_content', $page_id ) );
 
-		// Get schema output.
+		// Get schema output (sections will be used by enricher).
 		$schema = $this->get_yoast_schema_output();
 		$graph  = $schema['@graph'];
 
@@ -208,8 +207,8 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 
 		$this->go_to( get_permalink( $page_id ) );
 
-		// Reset sections for clean schema generation.
-		$this->parser->sections = [];
+		// Render blocks to collect sections.
+		do_blocks( get_post_field( 'post_content', $page_id ) );
 
 		$schema  = $this->get_yoast_schema_output();
 		$graph   = $schema['@graph'];
@@ -237,9 +236,7 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		// Assert parser collected 2 sections.
 		$this->assertCount( 2, $this->parser->sections, 'Should collect 2 sections' );
 
-		// Reset sections before schema generation to avoid duplicates.
-		$this->parser->sections = [];
-
+		// Get schema output (sections will be used by enricher).
 		$schema = $this->get_yoast_schema_output();
 		$graph  = $schema['@graph'];
 
@@ -272,9 +269,7 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		// Parser should collect nothing (empty post_ids).
 		$this->assertCount( 0, $this->parser->sections, 'Should not collect empty sections' );
 
-		// Reset sections before schema generation.
-		$this->parser->sections = [];
-
+		// Get schema output (empty sections means no ItemLists added).
 		$schema     = $this->get_yoast_schema_output();
 		$graph      = $schema['@graph'];
 		$item_lists = array_filter( $graph, fn( $node ) => ( $node['@type'] ?? '' ) === 'ItemList' );
