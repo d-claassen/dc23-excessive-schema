@@ -17,6 +17,7 @@ final class ItemList {
             $graph,
             [
                 '@id' => $context->site_url . '#/schema/itemlist/1',
+                '@type' => 'ItemList',
             ],
         );
         
