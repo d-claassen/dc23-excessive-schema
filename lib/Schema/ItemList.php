@@ -11,6 +11,8 @@ final class ItemList {
     }
     
     public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
+        printf('Adding 1 ItemList based on a core/query blocks', count($blocks));
+
         array_push(
             $graph,
             [
@@ -27,8 +29,9 @@ final class ItemList {
      * @param array $blocks The blocks of this type on the current page.
      */
     public function prepare_itemlist_references( $blocks ) {
+        printf('Found %d core/query blocks', count($blocks));
         add_filter( 'wpseo_schema_webpage', function( $webpage_data ) use ( $blocks ) {
-            die(sprintf('There were $s query blocks', count($blocks)));
+            printf('Attaching %d ItemList pieces to the WebPage', count($blocks));
         } );
     }
 }
