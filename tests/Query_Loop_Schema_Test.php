@@ -360,6 +360,9 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 	 * @return array Schema data.
 	 */
 	private function get_yoast_schema_output(): array {
+		// Unhook parser to prevent double collection if wpseo_head renders content.
+		remove_filter( 'render_block', [ $this->parser, 'capture' ] );
+
 		$json = $this->get_schema_json();
 
 		return json_decode( $json, true );
