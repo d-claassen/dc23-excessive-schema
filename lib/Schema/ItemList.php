@@ -18,6 +18,7 @@ final class ItemList {
             [
                 '@id' => $context->site_url . '#/schema/itemlist/1',
                 '@type' => 'ItemList',
+                'name' => '',
             ],
         );
         
