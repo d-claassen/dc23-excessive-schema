@@ -18,7 +18,7 @@ final class ItemList {
             [
                 '@id' => $context->site_url . '#/schema/itemlist/1',
                 '@type' => 'ItemList',
-                'name' => '',
+                'name' => $this->resolve_name( $query_loop_block ),
             ],
         );
         
@@ -46,4 +46,70 @@ final class ItemList {
             return $webpage_data;
         }, 10, 2 );
     }
+    
+
+	/**
+	 * Resolve the name for a Query Loop section.
+	 *
+	 * Priority order:
+	 * 1. First core/heading or core/query-title in inner blocks
+	 * 2. Block's editor-assigned rename (metadata.name)
+	 * 3. Post type label fallback
+	 *
+	 * @param array $block Block data.
+	 *
+	 * @return string Section name.
+	 */
+	private function resolve_name( array $block ): string {
+		// Priority 1: Search for heading in inner blocks.
+		$heading = $this->find_heading_in_blocks( $block['innerBlocks'] ?? [] );
+		if ( ! empty( $heading ) ) {
+			return $heading;
+		}
+
+		// Priority 2: Check metadata name.
+		$metadata_name = $block['attrs']['metadata']['name'] ?? '';
+		if ( ! empty( $metadata_name ) ) {
+			return $metadata_name;
+		}
+
+		// Priority 3: Fallback to post type label.
+		$post_type = $block['attrs']['query']['postType'] ?? 'post';
+		$post_type_obj = get_post_type_object( $post_type );
+
+		return $post_type_obj->labels->name ?? 'Posts';
+	}
+
+	/**
+	 * Recursively search for heading block in inner blocks.
+	 *
+	 * @param array $blocks Array of blocks to search.
+	 *
+	 * @return string Heading content or empty string.
+	 */
+	private function find_heading_in_blocks( array $blocks ): string {
+		foreach ( $blocks as $block ) {
+			// Check if this is a heading or query-title block.
+			if ( in_array( $block['blockName'] ?? '', [ 'core/heading', 'core/query-title' ], true ) ) {
+				// Extract text content from block.
+				$content = $block['innerHTML'] ?? '';
+				$content = wp_strip_all_tags( $content );
+				$content = trim( $content );
+
+				if ( ! empty( $content ) ) {
+					return $content;
+				}
+			}
+
+			// Recursively search inner blocks.
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$heading = $this->find_heading_in_blocks( $block['innerBlocks'] );
+				if ( ! empty( $heading ) ) {
+					return $heading;
+				}
+			}
+		}
+
+		return '';
+	}
 }
