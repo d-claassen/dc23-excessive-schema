@@ -348,13 +348,33 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 	 * @return array Schema data.
 	 */
 	private function get_yoast_schema_output(): array {
-		if ( ! function_exists( 'YoastSEO' ) ) {
-			$this->markTestSkipped( 'Yoast SEO not available' );
+		$json = $this->get_schema_json();
+
+		return json_decode( $json, true );
+	}
+
+	/**
+	 * Get schema JSON from Yoast output.
+	 *
+	 * @return string JSON-LD schema string.
+	 */
+	private function get_schema_json(): string {
+		ob_start();
+		do_action( 'wpseo_head' );
+		$wpseo_head = ob_get_contents();
+		ob_end_clean();
+
+		$dom = new \DOMDocument();
+		@$dom->loadHTML( $wpseo_head );
+		$scripts = $dom->getElementsByTagName( 'script' );
+
+		foreach ( $scripts as $script ) {
+			if ( $script instanceof \DOMElement && $script->getAttribute( 'type' ) === 'application/ld+json' ) {
+				return $script->textContent;
+			}
 		}
 
-		$schema = YoastSEO()->meta->for_current_page()->get_head()->json_ld;
-
-		return json_decode( $schema, true );
+		throw new \LengthException( 'No schema script found in wpseo_head output.' );
 	}
 
 	/**

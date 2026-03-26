@@ -110,6 +110,13 @@ final class Graph_Enricher {
 
 		try {
 			$page_type = YoastSEO()->meta->for_current_page()->schema_page_type;
+
+			// Yoast can return an array of types like ['ProfilePage', 'WebPage'].
+			// Take the first (most specific) type.
+			if ( is_array( $page_type ) ) {
+				return $page_type[0] ?? 'WebPage';
+			}
+
 			return $page_type ?? 'WebPage';
 		} catch ( \Exception $e ) {
 			return 'WebPage';
