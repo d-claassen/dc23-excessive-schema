@@ -30,8 +30,17 @@ final class ItemList {
      */
     public function prepare_itemlist_references( $blocks ) {
         printf('Found %d core/query blocks', count($blocks));
-        add_filter( 'wpseo_schema_webpage', function( $webpage_data ) use ( $blocks ) {
+        add_filter( 'wpseo_schema_webpage', function( $webpage_data, $context ) use ( $blocks ) {
             printf('Attaching %d ItemList pieces to the WebPage', count($blocks));
+            
+            $webpage_data['hasPart'] = [
+                [ '@id' => $context->site_url . '#/schema/itemlist/1' ],
+            ];
+
+            $webpage_data['mentions'] = [
+                [ '@id' => $context->site_url . '#/schema/itemlist/1' ],
+            ];
+            
         } );
     }
 }
