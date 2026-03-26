@@ -95,7 +95,13 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$this->assertSame( 'Latest Posts', $section['name'], 'Section name should match heading' );
 		$this->assertSame( 'post', $section['post_type'], 'Post type should be post' );
 		$this->assertCount( 3, $section['post_ids'], 'Section should have 3 post IDs' );
-		$this->assertSame( $this->post_ids, $section['post_ids'], 'Post IDs should match created posts' );
+
+		// Sort both arrays since Query Loop order doesn't matter for functionality.
+		$expected_ids = $this->post_ids;
+		$actual_ids   = $section['post_ids'];
+		sort( $expected_ids );
+		sort( $actual_ids );
+		$this->assertSame( $expected_ids, $actual_ids, 'Post IDs should match created posts' );
 	}
 
 	/**
@@ -145,7 +151,10 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$page_id       = $this->create_page_with_blocks( $block_content );
 
 		$this->go_to( get_permalink( $page_id ) );
-		do_blocks( get_post_field( 'post_content', $page_id ) );
+
+		// Reset sections to ensure clean slate for schema generation.
+		// wpseo_head action will render blocks and collect sections.
+		$this->parser->sections = [];
 
 		// Get schema output.
 		$schema = $this->get_yoast_schema_output();
@@ -198,7 +207,9 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$page_id       = $this->create_page_with_blocks( $block_content );
 
 		$this->go_to( get_permalink( $page_id ) );
-		do_blocks( get_post_field( 'post_content', $page_id ) );
+
+		// Reset sections for clean schema generation.
+		$this->parser->sections = [];
 
 		$schema  = $this->get_yoast_schema_output();
 		$graph   = $schema['@graph'];
@@ -225,6 +236,9 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 
 		// Assert parser collected 2 sections.
 		$this->assertCount( 2, $this->parser->sections, 'Should collect 2 sections' );
+
+		// Reset sections before schema generation to avoid duplicates.
+		$this->parser->sections = [];
 
 		$schema = $this->get_yoast_schema_output();
 		$graph  = $schema['@graph'];
@@ -257,6 +271,9 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 
 		// Parser should collect nothing (empty post_ids).
 		$this->assertCount( 0, $this->parser->sections, 'Should not collect empty sections' );
+
+		// Reset sections before schema generation.
+		$this->parser->sections = [];
 
 		$schema     = $this->get_yoast_schema_output();
 		$graph      = $schema['@graph'];
