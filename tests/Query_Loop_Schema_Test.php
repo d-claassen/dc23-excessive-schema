@@ -153,10 +153,10 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$this->go_to( get_permalink( $page_id ) );
 
 		// Render blocks to collect sections (wpseo_head doesn't render content).
-		do_blocks( get_post_field( 'post_content', $page_id ) );
+		// do_blocks( get_post_field( 'post_content', $page_id ) );
 
 		// Get schema output (sections will be used by enricher).
-		$schema = $this->get_yoast_schema_output();
+		$schema = $this->get_yoast_schema_output( true );
 		$graph  = $schema['@graph'];
 
 		// Find WebPage node.
@@ -373,11 +373,15 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 	 *
 	 * @return string JSON-LD schema string.
 	 */
-	private function get_schema_json(): string {
+	private function get_schema_json( bool $debug = false ): string {
 		ob_start();
 		do_action( 'wpseo_head' );
 		$wpseo_head = ob_get_contents();
 		ob_end_clean();
+		
+		if ( $debug ) {
+			var_dump( $wpseo_head );
+		}
 
 		$dom = new \DOMDocument();
 		@$dom->loadHTML( $wpseo_head );
