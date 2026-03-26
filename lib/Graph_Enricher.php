@@ -99,6 +99,8 @@ final class Graph_Enricher {
 			}
 		}
 		unset( $node );
+		
+		return $graph;
 
 		// Merge ItemList nodes into graph.
 		return array_merge( $graph, $additions );
