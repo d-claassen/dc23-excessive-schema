@@ -18,6 +18,13 @@ final class ItemList {
         $list_name = $this->resolve_name( $query_loop_block );
         $post_ids  = $this->resolve_post_ids( $block['attrs']['query'] ?? [] );
 
+        foreach ( $post_ids as $i => $post_id ) {
+			$items[] = [
+				'@type'    => 'ListItem',
+				'position' => $i + 1,
+				'item'     => [ '@id' => \get_permalink( $post_id ) ],
+			];
+		}
 
         array_push(
             $graph,
