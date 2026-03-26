@@ -41,6 +41,7 @@ final class ItemList {
                 [ '@id' => $context->site_url . '#/schema/itemlist/1' ],
             ];
             
-        } );
+            return $webpage_data;
+        }, 10, 2 );
     }
 }
