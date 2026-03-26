@@ -11,7 +11,7 @@ final class ItemList {
     }
     
     public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
-        printf('Adding 1 ItemList based on a core/query blocks', count($blocks));
+        printf('Adding 1 ItemList based on a core/query blocks');
 
         array_push(
             $graph,
