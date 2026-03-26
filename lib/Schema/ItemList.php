@@ -13,12 +13,15 @@ final class ItemList {
     public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
         printf('Adding 1 ItemList based on a core/query blocks');
 
+        $items = [];
+
         array_push(
             $graph,
             [
                 '@id' => $context->site_url . '#/schema/itemlist/1',
                 '@type' => 'ItemList',
                 'name' => $this->resolve_name( $query_loop_block ),
+            	'itemListElement' => $items,
             ],
         );
         
