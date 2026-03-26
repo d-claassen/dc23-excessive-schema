@@ -10,6 +10,9 @@
 	<php>
 		<ini name="display_errors" value="1" />
 		<ini name="error_reporting" value="-1" />
+
+		<!-- <const name="WPSEO_PATH" value="" /> -->
+		<const name="YOAST_ENVIRONMENT" value="development" />
 	</php>
 
 	<testsuites>
