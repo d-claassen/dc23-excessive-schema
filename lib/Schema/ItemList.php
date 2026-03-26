@@ -14,13 +14,17 @@ final class ItemList {
         printf('Adding 1 ItemList based on a core/query blocks');
 
         $items = [];
+        
+        $list_name = $this->resolve_name( $query_loop_block );
+        $post_ids  = $this->resolve_post_ids( $block['attrs']['query'] ?? [] );
+
 
         array_push(
             $graph,
             [
                 '@id' => $context->site_url . '#/schema/itemlist/1',
                 '@type' => 'ItemList',
-                'name' => $this->resolve_name( $query_loop_block ),
+                'name' => $list_name,
             	'itemListElement' => $items,
             ],
         );
