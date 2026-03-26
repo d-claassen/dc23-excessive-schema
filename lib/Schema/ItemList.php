@@ -13,11 +13,15 @@ final class ItemList {
     public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
         printf('Adding 1 ItemList based on a core/query blocks');
 
-        $items = [];
-        
-        $list_name = $this->resolve_name( $query_loop_block );
         $post_ids  = $this->resolve_post_ids( $block['attrs']['query'] ?? [] );
 
+        // No content in this block.
+        if ( empty( $post_ids ) ) {
+            return $graph;
+        }
+
+        $items = [];
+        $list_name = $this->resolve_name( $query_loop_block );
         foreach ( $post_ids as $i => $post_id ) {
 			$items[] = [
 				'@type'    => 'ListItem',
