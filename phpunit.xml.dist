@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+	backupGlobals="false"
+	bootstrap="tests/bootstrap.php"
+	colors="true"
+	resolveDependencies="true"
+	executionOrder="random"
+	beStrictAboutOutputDuringTests="true"
+	failOnRisky="true"
+	failOnWarning="true"
+>
+	<php>
+		<ini name="display_errors" value="1" />
+		<ini name="error_reporting" value="-1" />
+		<const name="YOAST_ENVIRONMENT" value="development" />
+		<const name="YOAST_SEO_INDEXABLES" value="1" />
+	</php>
+
+	<testsuites>
+		<testsuite name="DC23 Excessive Schema">
+			<directory>tests</directory>
+		</testsuite>
+	</testsuites>
+
+	<source>
+		<include>
+			<directory suffix=".php">lib</directory>
+		</include>
+	</source>
+
+	<coverage/>
+
+</phpunit>

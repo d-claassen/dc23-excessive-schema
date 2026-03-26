@@ -1,0 +1,43 @@
+{
+  "name": "dc23-excessive-schema",
+  "version": "0.1.0",
+  "description": "Template-level schema enrichment for WordPress Query Loop blocks",
+  "author": "Dennis Claassen",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "schema",
+    "yoast",
+    "seo"
+  ],
+  "homepage": "https://github.com/d-claassen/dc23-excessive-schema",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/d-claassen/dc23-excessive-schema.git"
+  },
+  "bugs": {
+    "url": "https://github.com/d-claassen/dc23-excessive-schema/issues"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "files": [
+    "readme.*",
+    "dc23-excessive-schema.php",
+    "vendor/**",
+    "lib/**"
+  ],
+  "devDependencies": {
+    "@wordpress/env": "^11.2.0",
+    "@wordpress/scripts": "^31.7.0"
+  },
+  "scripts": {
+    "lint:pkg-json": "wp-scripts lint-pkg-json",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "version": "node ./scripts/update-version.js $npm_package_version && git add dc23-excessive-schema.php readme.txt",
+    "wp-env": "wp-env"
+  }
+}

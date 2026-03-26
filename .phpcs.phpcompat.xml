@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="PHP Compatibility" xsi:noNamespaceSchemaLocation="./vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+	<description>Check PHP version compatibility</description>
+
+	<!-- What to scan -->
+	<file>lib</file>
+	<file>dc23-excessive-schema.php</file>
+
+	<!-- How to scan -->
+	<arg name="extensions" value="php"/>
+	<arg value="sp"/>
+	<arg name="basepath" value="./"/>
+
+	<!-- Rules -->
+	<config name="testVersion" value="8.2-"/>
+	<rule ref="PHPCompatibility"/>
+
+</ruleset>

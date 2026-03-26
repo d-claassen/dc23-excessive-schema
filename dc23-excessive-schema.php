@@ -1,0 +1,79 @@
+<?php
+/**
+ * Plugin Name:       DC23 Excessive Schema
+ * Description:       Template-level schema enrichment: connects WebPage to Query Loop sections via ItemList nodes.
+ * Requires at least: 6.6
+ * Requires PHP:      8.2
+ * Requires Plugins:  wordpress-seo
+ * Version:           0.1.0
+ * Author:            Dennis Claassen
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       dc23-excessive-schema
+ * GitHub Plugin URI: https://github.com/d-claassen/dc23-excessive-schema
+ * Primary Branch:    main
+ * Release Asset:     true
+ *
+ * @package DC23
+ */
+
+declare( strict_types=1 );
+
+namespace DC23\ExcessiveSchema;
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+// Require Composer autoloader.
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+}
+
+/**
+ * Initialize the plugin.
+ *
+ * @return void
+ */
+function init(): void {
+	// Check if Yoast SEO is active.
+	if ( ! function_exists( 'YoastSEO' ) ) {
+		add_action( 'admin_notices', __NAMESPACE__ . '\\display_yoast_dependency_notice' );
+		return;
+	}
+
+	// Initialize Query Loop Parser to collect sections during rendering.
+	$parser = new Query_Loop_Parser();
+	$parser->register();
+
+	// Initialize Schema Helpers.
+	$helpers = new Schema_Helpers();
+
+	// Initialize Graph Enricher with dependencies.
+	$enricher = new Graph_Enricher( $parser, $helpers );
+	$enricher->register();
+}
+
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
+
+/**
+ * Display admin notice when Yoast SEO is not active.
+ *
+ * @return void
+ */
+function display_yoast_dependency_notice(): void {
+	?>
+	<div class="notice notice-error">
+		<p>
+			<?php
+			printf(
+				/* translators: %s: Plugin name */
+				esc_html__( '%s requires Yoast SEO to be installed and activated.', 'dc23-excessive-schema' ),
+				'<strong>DC23 Excessive Schema</strong>'
+			);
+			?>
+		</p>
+	</div>
+	<?php
+}
