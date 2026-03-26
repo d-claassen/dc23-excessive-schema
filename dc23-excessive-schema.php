@@ -42,6 +42,8 @@ function init(): void {
 		add_action( 'admin_notices', __NAMESPACE__ . '\\display_yoast_dependency_notice' );
 		return;
 	}
+	
+	( new \DC23\ExcessiveSchema\Schema\ItemList() )->register();
 
 	// Initialize Query Loop Parser to collect sections during rendering.
 	$parser = new Query_Loop_Parser();
