@@ -73,11 +73,56 @@ final class Query_Loop_Parser {
 	 * @return string Section name.
 	 */
 	private function resolve_name( array $block ): string {
-		// TODO: Implement heading search in inner blocks.
-		// TODO: Check metadata.name.
-		// TODO: Fallback to post type label.
+		// Priority 1: Search for heading in inner blocks.
+		$heading = $this->find_heading_in_blocks( $block['innerBlocks'] ?? [] );
+		if ( ! empty( $heading ) ) {
+			return $heading;
+		}
 
-		return 'Query Loop Section';
+		// Priority 2: Check metadata name.
+		$metadata_name = $block['attrs']['metadata']['name'] ?? '';
+		if ( ! empty( $metadata_name ) ) {
+			return $metadata_name;
+		}
+
+		// Priority 3: Fallback to post type label.
+		$post_type = $block['attrs']['query']['postType'] ?? 'post';
+		$post_type_obj = get_post_type_object( $post_type );
+
+		return $post_type_obj->labels->name ?? 'Posts';
+	}
+
+	/**
+	 * Recursively search for heading block in inner blocks.
+	 *
+	 * @param array $blocks Array of blocks to search.
+	 *
+	 * @return string Heading content or empty string.
+	 */
+	private function find_heading_in_blocks( array $blocks ): string {
+		foreach ( $blocks as $block ) {
+			// Check if this is a heading or query-title block.
+			if ( in_array( $block['blockName'] ?? '', [ 'core/heading', 'core/query-title' ], true ) ) {
+				// Extract text content from block.
+				$content = $block['innerHTML'] ?? '';
+				$content = wp_strip_all_tags( $content );
+				$content = trim( $content );
+
+				if ( ! empty( $content ) ) {
+					return $content;
+				}
+			}
+
+			// Recursively search inner blocks.
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$heading = $this->find_heading_in_blocks( $block['innerBlocks'] );
+				if ( ! empty( $heading ) ) {
+					return $heading;
+				}
+			}
+		}
+
+		return '';
 	}
 
 	/**
@@ -90,10 +135,17 @@ final class Query_Loop_Parser {
 	 * @return array<int> Post IDs.
 	 */
 	private function resolve_post_ids( array $query_attrs ): array {
-		// TODO: Build WP_Query args from block attributes.
-		// TODO: Handle taxonomy queries.
-		// TODO: Return post IDs.
+		$args = [
+			'post_type'      => $query_attrs['postType'] ?? 'post',
+			'posts_per_page' => $query_attrs['perPage'] ?? get_option( 'posts_per_page' ),
+			'orderby'        => $query_attrs['orderBy'] ?? 'date',
+			'order'          => strtoupper( $query_attrs['order'] ?? 'DESC' ),
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		];
 
-		return [];
+		$query = new \WP_Query( $args );
+
+		return $query->posts;
 	}
 }

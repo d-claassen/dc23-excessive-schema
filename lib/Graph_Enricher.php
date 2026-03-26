@@ -63,13 +63,57 @@ final class Graph_Enricher {
 			return $graph;
 		}
 
-		// TODO: Get page type from Yoast.
-		// TODO: Determine connection property (hasPart vs mentions).
-		// TODO: Build ItemList nodes.
-		// TODO: Mutate WebPage node to add references.
-		// TODO: Merge new nodes into graph.
+		// Get page type from Yoast.
+		$page_type = $this->get_page_type();
 
-		return $graph;
+		// Determine connection property based on page type.
+		$property = $this->get_connection_property( $page_type );
+
+		// Build canonical URL and WebPage @id.
+		$canonical  = $context->canonical;
+		$webpage_id = $canonical . '#webpage';
+
+		// Build ItemList nodes and collect references.
+		$additions  = [];
+		$references = [];
+
+		foreach ( $this->parser->sections as $section ) {
+			$list_id      = $canonical . '#' . sanitize_title( $section['name'] ) . '-list';
+			$references[] = [ '@id' => $list_id ];
+			$additions[]  = $this->helpers->build_item_list( $list_id, $section );
+		}
+
+		// Find and mutate the WebPage node to add references.
+		foreach ( $graph as &$node ) {
+			if ( ( $node['@id'] ?? '' ) === $webpage_id ) {
+				// Merge with existing property if present.
+				$existing         = $node[ $property ] ?? [];
+				$node[ $property ] = array_merge( $existing, $references );
+				break;
+			}
+		}
+		unset( $node );
+
+		// Merge ItemList nodes into graph.
+		return array_merge( $graph, $additions );
+	}
+
+	/**
+	 * Get the current page's schema type from Yoast.
+	 *
+	 * @return string Page type (e.g., 'WebPage', 'CollectionPage').
+	 */
+	private function get_page_type(): string {
+		if ( ! function_exists( 'YoastSEO' ) ) {
+			return 'WebPage';
+		}
+
+		try {
+			$page_type = YoastSEO()->meta->for_current_page()->schema_page_type;
+			return $page_type ?? 'WebPage';
+		} catch ( \Exception $e ) {
+			return 'WebPage';
+		}
 	}
 
 	/**

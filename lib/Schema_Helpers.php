@@ -54,9 +54,8 @@ final class Schema_Helpers {
 	private function get_node_id( int $post_id, string $post_type ): string {
 		$url = get_permalink( $post_id );
 
-		return match ( $post_type ) {
-			'tec_event' => $url . '#event',
-			default     => $url . '#article',
-		};
+		// For now, only support blog posts with #article fragment.
+		// TODO: Add support for other post types (events, portfolio, etc.) later.
+		return $url . '#article';
 	}
 }
