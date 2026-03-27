@@ -13,7 +13,7 @@ final class ItemList {
     public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
         printf('Adding 1 ItemList based on a core/query blocks');
 
-        $post_ids  = $this->resolve_post_ids( $block['attrs']['query'] ?? [] );
+        $post_ids  = $this->resolve_post_ids( $wuery_loop_block['attrs']['query'] ?? [] );
 
         // No content in this block.
         if ( empty( $post_ids ) ) {
@@ -33,7 +33,7 @@ final class ItemList {
         array_push(
             $graph,
             [
-                '@id' => $context->site_url . '#/schema/itemlist/1',
+                '@id' => $context->canonical . '#/schema/itemlist/1',
                 '@type' => 'ItemList',
                 'name' => $list_name,
             	'itemListElement' => $items,
