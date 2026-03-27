@@ -46,40 +46,6 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 	}
 
 	/**
-	 * Test Query Loop detection with block metadata name (no heading).
-	 *
-	 * @return void
-	 */
-	public function test_query_loop_detection_with_metadata_name(): void {
-		$block_content = $this->create_query_loop_with_metadata_name( 'Featured Articles' );
-		$page_id       = $this->create_page_with_blocks( $block_content );
-
-		$this->go_to( get_permalink( $page_id ) );
-		do_blocks( get_post_field( 'post_content', $page_id ) );
-
-		$this->assertCount( 1, $this->parser->sections );
-		$section = $this->parser->sections[0];
-		$this->assertSame( 'Featured Articles', $section['name'], 'Should use metadata name' );
-	}
-
-	/**
-	 * Test Query Loop detection with post type label fallback.
-	 *
-	 * @return void
-	 */
-	public function test_query_loop_detection_with_fallback_name(): void {
-		$block_content = $this->create_basic_query_loop();
-		$page_id       = $this->create_page_with_blocks( $block_content );
-
-		$this->go_to( get_permalink( $page_id ) );
-		do_blocks( get_post_field( 'post_content', $page_id ) );
-
-		$this->assertCount( 1, $this->parser->sections );
-		$section = $this->parser->sections[0];
-		$this->assertSame( 'Posts', $section['name'], 'Should fallback to post type label' );
-	}
-
-	/**
 	 * Test schema graph enrichment on CollectionPage.
 	 *
 	 * @return void
@@ -130,6 +96,52 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		// Verify WebPage references ItemList.
 		$list_id = $item_list['@id'];
 		$this->assertSame( $list_id, $webpage['hasPart'][0]['@id'], 'WebPage should reference ItemList @id' );
+	}
+
+	/**
+	 * Test Query Loop detection with block metadata name (no heading).
+	 *
+	 * @return void
+	 */
+	public function test_query_loop_detection_with_metadata_name(): void {
+		$block_content = $this->create_query_loop_with_metadata_name( 'Featured Articles' );
+		$page_id       = $this->create_page_with_blocks( $block_content );
+
+		$this->go_to( get_permalink( $page_id ) );
+
+		// Get schema output (sections will be used by enricher).
+		$schema = $this->get_yoast_schema_output( true );
+		$graph  = $schema['@graph'];
+
+		// Find ItemList node.
+		$item_list = $this->find_node_by_type( $graph, 'ItemList' );
+		$this->assertNotNull( $item_list, 'Should have ItemList node' );
+
+		// Assert ItemList structure.
+		$this->assertSame( 'Featured Articles', $item_list['name'], 'ItemList name should match heading' );
+	}
+
+	/**
+	 * Test Query Loop detection with post type label fallback.
+	 *
+	 * @return void
+	 */
+	public function test_query_loop_detection_with_fallback_name(): void {
+		$block_content = $this->create_basic_query_loop();
+		$page_id       = $this->create_page_with_blocks( $block_content );
+
+		$this->go_to( get_permalink( $page_id ) );
+
+		// Get schema output (sections will be used by enricher).
+		$schema = $this->get_yoast_schema_output( true );
+		$graph  = $schema['@graph'];
+
+		// Find ItemList node.
+		$item_list = $this->find_node_by_type( $graph, 'ItemList' );
+		$this->assertNotNull( $item_list, 'Should have ItemList node' );
+
+		// Assert ItemList structure.
+		$this->assertSame( 'Posts', $item_list['name'], 'ItemList name should match heading' );
 	}
 
 	/**
