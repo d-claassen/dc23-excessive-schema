@@ -47,7 +47,7 @@ final class Graph_Enricher {
 	 * @return void
 	 */
 	public function register(): void {
-		add_filter( 'wpseo_schema_graph', [ $this, 'enrich' ], 10, 2 );
+		// add_filter( 'wpseo_schema_graph', [ $this, 'enrich' ], 10, 2 );
 	}
 
 	/**
@@ -99,8 +99,6 @@ final class Graph_Enricher {
 			}
 		}
 		unset( $node );
-		
-		return $graph;
 
 		// Merge ItemList nodes into graph.
 		return array_merge( $graph, $additions );
