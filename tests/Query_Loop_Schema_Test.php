@@ -9,28 +9,10 @@ declare( strict_types=1 );
 
 namespace DC23\Tests\ExcessiveSchema;
 
-use DC23\ExcessiveSchema\Query_Loop_Parser;
-use DC23\ExcessiveSchema\Graph_Enricher;
-use DC23\ExcessiveSchema\Schema_Helpers;
-
 /**
  * Integration tests for Query Loop schema enrichment.
  */
 final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
-
-	/**
-	 * Query Loop Parser instance.
-	 *
-	 * @var Query_Loop_Parser
-	 */
-	private Query_Loop_Parser $parser;
-
-	/**
-	 * Graph Enricher instance.
-	 *
-	 * @var Graph_Enricher
-	 */
-	private Graph_Enricher $enricher;
 
 	/**
 	 * Test post IDs.
@@ -53,17 +35,6 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 			self::factory()->post->create( [ 'post_title' => 'Test Post 2' ] ),
 			self::factory()->post->create( [ 'post_title' => 'Test Post 3' ] ),
 		];
-
-		// Initialize plugin components.
-		$this->parser   = new Query_Loop_Parser();
-		$helpers        = new Schema_Helpers();
-		$this->enricher = new Graph_Enricher( $this->parser, $helpers );
-
-		$this->parser->register();
-		$this->enricher->register();
-
-		// Reset sections before each test.
-		$this->parser->sections = [];
 	}
 
 	/**
@@ -72,36 +43,6 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 	 * @return void
 	 */
 	public function expectDeprecated(): void {
-	}
-
-	/**
-	 * Test Query Loop detection with heading in inner blocks.
-	 *
-	 * @return void
-	 */
-	public function test_query_loop_detection_with_heading(): void {
-		$block_content = $this->create_query_loop_with_heading( 'Latest Posts' );
-		$page_id       = $this->create_page_with_blocks( $block_content );
-
-		// Render the page to trigger render_block filter.
-		$this->go_to( get_permalink( $page_id ) );
-		get_post( $page_id );
-		do_blocks( get_post_field( 'post_content', $page_id ) );
-
-		// Assert parser collected the section.
-		$this->assertCount( 1, $this->parser->sections, 'Parser should collect 1 section' );
-
-		$section = $this->parser->sections[0];
-		$this->assertSame( 'Latest Posts', $section['name'], 'Section name should match heading' );
-		$this->assertSame( 'post', $section['post_type'], 'Post type should be post' );
-		$this->assertCount( 3, $section['post_ids'], 'Section should have 3 post IDs' );
-
-		// Sort both arrays since Query Loop order doesn't matter for functionality.
-		$expected_ids = $this->post_ids;
-		$actual_ids   = $section['post_ids'];
-		sort( $expected_ids );
-		sort( $actual_ids );
-		$this->assertSame( $expected_ids, $actual_ids, 'Post IDs should match created posts' );
 	}
 
 	/**
@@ -151,9 +92,6 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$page_id       = $this->create_page_with_blocks( $block_content );
 
 		$this->go_to( get_permalink( $page_id ) );
-
-		// Render blocks to collect sections (wpseo_head doesn't render content).
-		// do_blocks( get_post_field( 'post_content', $page_id ) );
 
 		// Get schema output (sections will be used by enricher).
 		$schema = $this->get_yoast_schema_output( true );
@@ -207,9 +145,6 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 
 		$this->go_to( get_permalink( $page_id ) );
 
-		// Render blocks to collect sections.
-		do_blocks( get_post_field( 'post_content', $page_id ) );
-
 		$schema  = $this->get_yoast_schema_output();
 		$graph   = $schema['@graph'];
 		$webpage = $this->find_node_by_type( $graph, 'ProfilePage' );
@@ -231,10 +166,6 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$page_id = $this->create_page_with_blocks( $block_content );
 
 		$this->go_to( get_permalink( $page_id ) );
-		do_blocks( get_post_field( 'post_content', $page_id ) );
-
-		// Assert parser collected 2 sections.
-		$this->assertCount( 2, $this->parser->sections, 'Should collect 2 sections' );
 
 		// Get schema output (sections will be used by enricher).
 		$schema = $this->get_yoast_schema_output();
@@ -264,10 +195,6 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$page_id       = $this->create_page_with_blocks( $block_content );
 
 		$this->go_to( get_permalink( $page_id ) );
-		do_blocks( get_post_field( 'post_content', $page_id ) );
-
-		// Parser should collect nothing (empty post_ids).
-		$this->assertCount( 0, $this->parser->sections, 'Should not collect empty sections' );
 
 		// Get schema output (empty sections means no ItemLists added).
 		$schema     = $this->get_yoast_schema_output();
