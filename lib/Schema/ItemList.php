@@ -33,10 +33,10 @@ final class ItemList {
         array_push(
             $graph,
             [
-                '@id' => $context->canonical . '#/schema/itemlist/1',
+                '@id' => $context->canonical . '#/schema/itemlist/' . sanitize_title( $list_name ),
                 '@type' => 'ItemList',
                 'name' => $list_name,
-            	'itemListElement' => $items,
+                'itemListElement' => $items,
             ],
         );
         
