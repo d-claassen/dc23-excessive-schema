@@ -53,19 +53,27 @@ final class ItemList {
         add_filter( 'wpseo_schema_webpage', function( $webpage_data, $context ) use ( $blocks ) {
             printf('Attaching %d ItemList pieces to the WebPage', count($blocks));
             
+            $references = [];
+            foreach ( $blocks as $query_loop_block ) {
+                $list_name = $this->resolve_name( $query_loop_block );
+                $references[] = [
+                    '@id' => $context->canonical . '#/schema/itemlist/' . sanitize_title( $list_name ),
+                ];
+            }
+            
             $list_as_side_content = ['ProfilePage', 'AboutPage', 'ItemPage'];
             $webpage_type = (array) $webpage_data['@type'];
             if ( ! empty( array_intersect( $webpage_type, $list_as_side_content ) ) ) {
                 $webpage_data['mentions'] = $webpage_data['mentions'] ?? [];
                 array_push(
                     $webpage_data['mentions'],
-                    [ '@id' => $context->canonical . '#/schema/itemlist/1' ],
+                    ...$references,
                 );
             } else {
                 $webpage_data['hasPart'] = $webpage_data['hasPart'] ?? [];
                 array_push(
                     $webpage_data['hasPart'],
-                    [ '@id' => $context->canonical . '#/schema/itemlist/1' ],
+                    ...$references,
                 );
             }
             
