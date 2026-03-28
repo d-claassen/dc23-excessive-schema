@@ -23,7 +23,7 @@ final class ItemList {
         $items = [];
         $list_name = $this->resolve_name( $query_loop_block );
         foreach ( $post_ids as $i => $post_id ) {
-            $post_context = \YoastSEO()->meta->for_page( $post_id );
+            $post_context = \YoastSEO()->meta->for_post( $post_id );
             $page_type    = $post_context->schema_poage_type;
             
             
