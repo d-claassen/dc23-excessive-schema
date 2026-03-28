@@ -11,8 +11,6 @@ final class ItemList {
     }
     
     public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
-        printf('Adding 1 ItemList based on a core/query blocks');
-
         $post_ids  = $this->resolve_post_ids( $query_loop_block['attrs']['query'] ?? [] );
 
         // No content in this block.
@@ -23,6 +21,7 @@ final class ItemList {
         $items = [];
         $list_name = $this->resolve_name( $query_loop_block );
         foreach ( $post_ids as $i => $post_id ) {
+            // @TODO. Collect all meta at once wit for_posts(), and loop over the meta instead 
             $post_context = \YoastSEO()->meta->for_post( $post_id );
             $page_type    = $post_context->schema_page_type;
             $main_entity   = $post_context->main_entity_of_page;
@@ -42,6 +41,7 @@ final class ItemList {
         array_push(
             $graph,
             [
+                // @TODO. use queryId attr as identifier.
                 '@id' => $context->canonical . '#/schema/itemlist/' . sanitize_title( $list_name ),
                 '@type' => 'ItemList',
                 'name' => $list_name,
@@ -58,10 +58,7 @@ final class ItemList {
      * @param array $blocks The blocks of this type on the current page.
      */
     public function prepare_itemlist_references( $blocks ) {
-        printf('Found %d core/query blocks', count($blocks));
         add_filter( 'wpseo_schema_webpage', function( $webpage_data, $context ) use ( $blocks ) {
-            printf('Attaching %d ItemList pieces to the WebPage', count($blocks));
-            
             $references = [];
             foreach ( $blocks as $query_loop_block ) {
                 $list_name = $this->resolve_name( $query_loop_block );
