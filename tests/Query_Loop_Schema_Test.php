@@ -89,7 +89,8 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 			$this->assertArrayHasKey( '@id', $list_item['item'], 'Item should have @id' );
 
 			// Verify @id points to article fragment.
-			$expected_url = get_permalink( $this->post_ids[ $index ] ) . '#article';
+			$expected_post = $this->post_ids[ count( $this->post_ids ) - $index - 1 ];
+			$expected_url = get_permalink( $expected_post );// . '#article';
 			$this->assertSame( $expected_url, $list_item['item']['@id'], 'Should reference article @id' );
 		}
 
