@@ -34,7 +34,7 @@ final class ItemList {
                 'item' => $main_entity,
 				'_item'     => [
                     '@id'   => \get_permalink( $post_id ),
-                    '@type' => $post_type,
+                    '@type' => $page_type,
                 ],
 			];
 		}
