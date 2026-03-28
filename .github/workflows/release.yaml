@@ -81,7 +81,8 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-      - run: npm clean-install
+      - run: npm install
+      # - run: npm clean-install
       # - run: npm run-script build
       - name: 'Composer install'
         run: 'composer install --no-dev --prefer-dist --no-progress --optimize-autoloader'
