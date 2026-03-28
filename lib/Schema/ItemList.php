@@ -23,10 +23,17 @@ final class ItemList {
         $items = [];
         $list_name = $this->resolve_name( $query_loop_block );
         foreach ( $post_ids as $i => $post_id ) {
+            $post_context = \YoastSEO()->meta->for_page( $post_id );
+            $page_type    = $post_context->schema_poage_type;
+            
+            
 			$items[] = [
 				'@type'    => 'ListItem',
 				'position' => $i + 1,
-				'item'     => [ '@id' => \get_permalink( $post_id ) ],
+				'item'     => [
+                    '@id'   => \get_permalink( $post_id ),
+                    '@type' => $post_type,
+                ],
 			];
 		}
 
