@@ -1,6 +1,6 @@
 {
   "name": "dc23-excessive-schema",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Template-level schema enrichment for WordPress Query Loop blocks",
   "author": "Dennis Claassen",
   "license": "GPL-2.0-or-later",
