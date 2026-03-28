@@ -45,6 +45,8 @@ function init(): void {
 	
 	( new \DC23\ExcessiveSchema\Schema\ItemList() )->register();
 
+	return;
+
 	// Initialize Query Loop Parser to collect sections during rendering.
 	$parser = new Query_Loop_Parser();
 	$parser->register();
