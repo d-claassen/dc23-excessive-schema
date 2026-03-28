@@ -24,13 +24,15 @@ final class ItemList {
         $list_name = $this->resolve_name( $query_loop_block );
         foreach ( $post_ids as $i => $post_id ) {
             $post_context = \YoastSEO()->meta->for_post( $post_id );
-            $page_type    = $post_context->schema_poage_type;
+            $page_type    = $post_context->schema_page_type;
+            $main_entity   = $post_context->main_entity_of_page;
             
             
 			$items[] = [
 				'@type'    => 'ListItem',
 				'position' => $i + 1,
-				'item'     => [
+                'item' => $main_entity,
+				'_item'     => [
                     '@id'   => \get_permalink( $post_id ),
                     '@type' => $post_type,
                 ],
