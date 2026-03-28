@@ -31,8 +31,8 @@ final class ItemList {
 			$items[] = [
 				'@type'    => 'ListItem',
 				'position' => $i + 1,
-                'item' => $main_entity,
-				'_item'     => [
+                '_item' => $main_entity,
+				'item'     => [
                     '@id'   => \get_permalink( $post_id ),
                     '@type' => $page_type,
                 ],
