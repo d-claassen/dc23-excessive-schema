@@ -4,9 +4,5 @@
 	"plugins": [
 		"./vendor/wpackagist/wordpress-seo",
 		"."
-	],
-	"config": {
-		"YOAST_ENVIRONMENT": "development",
-		"YOAST_SEO_INDEXABLES": true
-	}
+	]
 }

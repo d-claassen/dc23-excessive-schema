@@ -42,17 +42,8 @@ function init(): void {
 		add_action( 'admin_notices', __NAMESPACE__ . '\\display_yoast_dependency_notice' );
 		return;
 	}
-
-	// Initialize Query Loop Parser to collect sections during rendering.
-	$parser = new Query_Loop_Parser();
-	$parser->register();
-
-	// Initialize Schema Helpers.
-	$helpers = new Schema_Helpers();
-
-	// Initialize Graph Enricher with dependencies.
-	$enricher = new Graph_Enricher( $parser, $helpers );
-	$enricher->register();
+	
+	( new \DC23\ExcessiveSchema\Schema\ItemList() )->register();
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );

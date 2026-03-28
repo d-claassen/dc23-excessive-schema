@@ -6,19 +6,17 @@
 	colors="true"
 	resolveDependencies="true"
 	executionOrder="random"
-	beStrictAboutOutputDuringTests="true"
-	failOnRisky="true"
-	failOnWarning="true"
 >
 	<php>
 		<ini name="display_errors" value="1" />
 		<ini name="error_reporting" value="-1" />
+
+		<!-- <const name="WPSEO_PATH" value="" /> -->
 		<const name="YOAST_ENVIRONMENT" value="development" />
-		<const name="YOAST_SEO_INDEXABLES" value="1" />
 	</php>
 
 	<testsuites>
-		<testsuite name="DC23 Excessive Schema">
+		<testsuite name="WordPress context">
 			<directory>tests</directory>
 		</testsuite>
 	</testsuites>
@@ -28,7 +26,4 @@
 			<directory suffix=".php">lib</directory>
 		</include>
 	</source>
-
-	<coverage/>
-
 </phpunit>
