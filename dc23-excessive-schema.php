@@ -44,19 +44,6 @@ function init(): void {
 	}
 	
 	( new \DC23\ExcessiveSchema\Schema\ItemList() )->register();
-
-	return;
-
-	// Initialize Query Loop Parser to collect sections during rendering.
-	$parser = new Query_Loop_Parser();
-	$parser->register();
-
-	// Initialize Schema Helpers.
-	$helpers = new Schema_Helpers();
-
-	// Initialize Graph Enricher with dependencies.
-	$enricher = new Graph_Enricher( $parser, $helpers );
-	$enricher->register();
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
