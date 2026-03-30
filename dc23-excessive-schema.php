@@ -44,6 +44,7 @@ function init(): void {
 	}
 	
 	( new \DC23\ExcessiveSchema\Schema\ItemList() )->register();
+	( new \DC23\ExcessiveSchema\Schema\ReadingTime() )->register();
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
