@@ -11,6 +11,14 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		parent::set_up();
 	}
 
+	/**
+	 * Override WordPress function that's incompatible with PHPUnit 10+.
+	 *
+	 * @return void
+	 */
+	public function expectDeprecated(): void {
+	}
+
 	public function test_mentions_added_for_internal_links(): void {
 		$target_id  = self::factory()->post->create( [ 'post_status' => 'publish' ] );
 		$target_url = get_permalink( $target_id );
