@@ -29,6 +29,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		] );
 		
 		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $target_id, [] );
 		self::factory()->post->update_object( $source_id, [] );
 
 		$this->go_to( \get_permalink( $source_id ) );
@@ -65,6 +66,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 			'post_status'  => 'publish',
 			'post_content' => '<p>See <a href="https://external.com/post">this</a>.</p>',
 		] );
+
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $source_id, [] );
 
@@ -92,6 +94,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		] );
 
 		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $target_id, [] );
 		self::factory()->post->update_object( $source_id, [] );
 
 		$this->index_links( $source_id );
