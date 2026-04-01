@@ -12,7 +12,7 @@ class Article_Mentions {
 	private Indexable_Repository $indexable_repo;
 	private SEO_Links_Repository $links_repo;
 
-	public function register_hooks(): void {
+	public function register(): void {
 		add_filter( 'wpseo_schema_article', [ $this, 'add_mentions' ], 10, 2 );
 	}
 
