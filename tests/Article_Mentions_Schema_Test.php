@@ -27,6 +27,12 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 			'post_status'  => 'publish',
 			'post_content' => sprintf( '<p>See <a href="%s">this post</a>.</p>', $target_url ),
 		] );
+		
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $source_id, [] );
+
+		$this->go_to( \get_permalink( $source_id ) );
+
 
 		$this->index_links( $source_id );
 
@@ -43,7 +49,9 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		] );
 
 		$this->index_links( $source_id );
-
+		
+		$this->go_to( \get_permalink( $source_id ) );
+		
 		$article = $this->get_article_schema( $source_id );
 
 		$this->assertArrayNotHasKey( 'mentions', $article );
@@ -56,7 +64,9 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		] );
 
 		$this->index_links( $source_id );
-
+		
+		$this->go_to( \get_permalink( $source_id ) );
+		
 		$article = $this->get_article_schema( $source_id );
 
 		$this->assertArrayNotHasKey( 'mentions', $article );
@@ -77,7 +87,9 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		] );
 
 		$this->index_links( $source_id );
-
+		
+		$this->go_to( \get_permalink( $source_id ) );
+		
 		$article = $this->get_article_schema( $source_id );
 
 		$this->assertSame( 'BlogPosting', $article['mentions'][0]['@type'] );
