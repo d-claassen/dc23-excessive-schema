@@ -60,7 +60,7 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$this->go_to( get_permalink( $page_id ) );
 
 		// Get schema output (sections will be used by enricher).
-		$schema = $this->get_yoast_schema_output( true );
+		$schema = $this->get_yoast_schema_output();
 		$graph  = $schema['@graph'];
 
 		// Find WebPage node.
@@ -111,7 +111,7 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$this->go_to( get_permalink( $page_id ) );
 
 		// Get schema output (sections will be used by enricher).
-		$schema = $this->get_yoast_schema_output( true );
+		$schema = $this->get_yoast_schema_output();
 		$graph  = $schema['@graph'];
 
 		// Find ItemList node.
@@ -134,7 +134,7 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$this->go_to( get_permalink( $page_id ) );
 
 		// Get schema output (sections will be used by enricher).
-		$schema = $this->get_yoast_schema_output( true );
+		$schema = $this->get_yoast_schema_output();
 		$graph  = $schema['@graph'];
 
 		// Find ItemList node.
