@@ -48,6 +48,9 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 			'post_content' => '<p>No links here.</p>',
 		] );
 
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $source_id, [] );
+
 		$this->index_links( $source_id );
 		
 		$this->go_to( \get_permalink( $source_id ) );
@@ -62,6 +65,8 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 			'post_status'  => 'publish',
 			'post_content' => '<p>See <a href="https://external.com/post">this</a>.</p>',
 		] );
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $source_id, [] );
 
 		$this->index_links( $source_id );
 		
@@ -85,6 +90,9 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 			'post_status'  => 'publish',
 			'post_content' => sprintf( '<p><a href="%s">link</a></p>', get_permalink( $target_id ) ),
 		] );
+
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $source_id, [] );
 
 		$this->index_links( $source_id );
 		
