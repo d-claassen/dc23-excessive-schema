@@ -111,6 +111,11 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	// -------------------------------------------------------------------------
 
 	private function index_links( int $post_id ): void {
+		add_filter( 'wpseo_should_save_indexable', function($intent) {
+			var_dump($intent);
+			return true;
+		});
+		
 		$indexable_repo = YoastSEO()->classes->get( Indexable_Repository::class );
 		$link_builder   = YoastSEO()->classes->get( Indexable_Link_Builder::class );
 
