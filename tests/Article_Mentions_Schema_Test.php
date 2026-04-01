@@ -119,7 +119,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$links = $link_builder->build( $indexable, $post->post_content );
 		
-				printf( '%1$s%2$d link(s)%1$s', PHP_EOL, count( $links ) );
+				printf( '%1$s%2$d link(s) (%3$s)%1$s', PHP_EOL, count( $links ), var_export( $indexable->link_count, true ) );
 	}
 
 	private function get_schema( int $post_id ): array {
