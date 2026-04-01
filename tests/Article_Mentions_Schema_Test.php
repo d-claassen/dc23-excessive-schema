@@ -117,7 +117,9 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		$indexable = $indexable_repo->find_by_id_and_type( $post_id, 'post' );
 		$post      = get_post( $post_id );
 
-		$link_builder->build( $indexable, $post->post_content );
+		$links = $link_builder->build( $indexable, $post->post_content );
+		
+				printf( '%1$s%2$d link(s)%1$s', PHP_EOL, count( $links ) );
 	}
 
 	private function get_schema( int $post_id ): array {
@@ -129,7 +131,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		preg_match( '/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s', $output, $matches );
 
-		printf( '%1$sPost ID: %3$s.$1$s%2$s%1$s', PHP_EOL, $matches[0], $post_id );
+		printf( '%1$sPost ID: %3$s.%1$s%2$s%1$s', PHP_EOL, $matches[0], $post_id );
 
 		return json_decode( $matches[1] ?? '{}', true );
 	}
