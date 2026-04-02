@@ -10,9 +10,23 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	public function set_up(): void {
 		parent::set_up();
 		
+		// Enable pretty urls. Yoasts internal linking system removes query args for "canonicalizing" indexables.
+		// That doesnt work well when the post id is specifically passed via them.
 		$this->set_permalink_structure( '/%postname%/' );
 		
+		// Enable indexables to allow internal links between then being set.
 		add_filter( 'wpseo_should_save_indexable', '__return_true' );
+		
+		// Create test user for publisher. Needed for Article ouput from sordpress-seo below 26.7.
+		$this->user_id = self::factory()->user->create( [
+			'display_name' => 'Test User',
+			'user_email'   => 'test@example.com',
+			'user_url'     => 'https://example.com',
+		] );
+
+		// Set Yoast user settings to use person schema
+		\YoastSEO()->helpers->options->set( 'company_or_person', 'person' );
+		\YoastSEO()->helpers->options->set( 'company_or_person_user_id', $this->user_id );
 	}
 
 	/**
