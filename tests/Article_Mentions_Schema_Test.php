@@ -52,8 +52,10 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	public function test_no_mentions_when_no_internal_links(): void {
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => '<p>No links here.</p>',
+			'post_content' => $post_content = '<p>No links here.</p>',
 		] );
+
+		var_dump( $post_content );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $source_id, [] );
@@ -70,8 +72,10 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	public function test_external_links_are_not_mentioned(): void {
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => '<p>See <a href="https://external.com/post">this</a>.</p>',
+			'post_content' => $post_content = '<p>See <a href="https://external.com/post">this</a>.</p>',
 		] );
+
+		var_dump( $post_content );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $source_id, [] );
@@ -99,8 +103,10 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => sprintf( '<p><a href="%s">link</a></p>', get_permalink( $target_id ) ),
+			'post_content' => $post_content = sprintf( '<p><a href="%s">link</a></p>', get_permalink( $target_id ) ),
 		] );
+
+		var_dump( $post_content );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $target_id, [] );
