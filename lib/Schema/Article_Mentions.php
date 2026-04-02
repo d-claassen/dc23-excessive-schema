@@ -31,7 +31,7 @@ class Article_Mentions {
 		}
 
 		$target_ids = array_column( $links, 'target_post_id' );
-		$targets    = $this->get_indexable_repo()->find_by_ids_and_type( $target_ids, 'post' );
+		$targets    = $this->get_indexable_repo()->find_by_multiple_ids_and_type( $target_ids, 'post' );
 		$targets    = array_column( $targets, null, 'object_id' );
 
 		$mentions = [];
