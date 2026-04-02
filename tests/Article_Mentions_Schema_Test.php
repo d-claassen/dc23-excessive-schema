@@ -125,6 +125,11 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$indexable = $indexable_repo->find_by_id_and_type( $post_id, 'post' );
 		$post      = get_post( $post_id );
+		
+		$home_url    = \wp_parse_url( \home_url() );
+		$current_url = \wp_parse_url( $indexable->permalink );
+	
+		var_dump(compact('home_url', 'current_url'));
 
 		$links = $link_builder->build( $indexable, $post->post_content );
 		
