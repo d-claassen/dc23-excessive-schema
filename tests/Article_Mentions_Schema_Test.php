@@ -17,8 +17,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 	/**
 	 * Override WordPress function that's incompatible with PHPUnit 10+.
-	 *
-	 * @return void
 	 */
 	public function expectDeprecated(): void {
 	}
@@ -29,17 +27,14 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => $post_content = sprintf( '<p>See <a href="%s">this post</a>.</p>', $target_url ),
+			'post_content' => sprintf( '<p>See <a href="%s">this post</a>.</p>', $target_url ),
 		] );
-		
-		var_dump( $post_content );
 		
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $target_id, [] );
 		self::factory()->post->update_object( $source_id, [] );
 
 		$this->go_to( \get_permalink( $source_id ) );
-
 
 		$this->index_links( $source_id );
 
@@ -52,10 +47,8 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	public function test_no_mentions_when_no_internal_links(): void {
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => $post_content = '<p>No links here.</p>',
+			'post_content' => '<p>No links here.</p>',
 		] );
-
-		var_dump( $post_content );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $source_id, [] );
@@ -72,10 +65,8 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	public function test_external_links_are_not_mentioned(): void {
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => $post_content = '<p>See <a href="https://external.com/post">this</a>.</p>',
+			'post_content' => '<p>See <a href="https://external.com/post">this</a>.</p>',
 		] );
-
-		var_dump( $post_content );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $source_id, [] );
@@ -103,10 +94,8 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => $post_content = sprintf( '<p><a href="%s">link</a></p>', get_permalink( $target_id ) ),
+			'post_content' => sprintf( '<p><a href="%s">link</a></p>', get_permalink( $target_id ) ),
 		] );
-
-		var_dump( $post_content );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $target_id, [] );
@@ -126,6 +115,8 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	// -------------------------------------------------------------------------
 
 	private function index_links( int $post_id ): void {
+		return;
+
 		$indexable_repo = YoastSEO()->classes->get( Indexable_Repository::class );
 		$link_builder   = YoastSEO()->classes->get( Indexable_Link_Builder::class );
 
@@ -135,7 +126,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		$links = $link_builder->build( $indexable, $post->post_content );
 		
 		printf( '%1$s%2$d link(s) (%3$s)%1$s', PHP_EOL, count( $links ), var_export( $indexable->link_count, true ) );
-		var_dump( $links );
 	}
 
 	private function get_schema( int $post_id ): array {
