@@ -126,21 +126,11 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	// -------------------------------------------------------------------------
 
 	private function index_links( int $post_id ): void {
-		add_filter( 'wpseo_should_save_indexable', function($intent) {
-			var_dump($intent);
-			return true;
-		});
-		
 		$indexable_repo = YoastSEO()->classes->get( Indexable_Repository::class );
 		$link_builder   = YoastSEO()->classes->get( Indexable_Link_Builder::class );
 
 		$indexable = $indexable_repo->find_by_id_and_type( $post_id, 'post' );
 		$post      = get_post( $post_id );
-		
-		$home_url    = \wp_parse_url( \home_url() );
-		$current_url = \wp_parse_url( $indexable->permalink );
-	
-		var_dump(compact('home_url', 'current_url'));
 
 		$links = $link_builder->build( $indexable, $post->post_content );
 		
@@ -157,7 +147,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		preg_match( '/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s', $output, $matches );
 
-		printf( '%1$sPost ID: %3$s.%1$s%2$s%1$s', PHP_EOL, $matches[0], $post_id );
+		printf( '%1$s%2$s%1$s', PHP_EOL, $matches[0] );
 
 		return json_decode( $matches[1] ?? '{}', true );
 	}
