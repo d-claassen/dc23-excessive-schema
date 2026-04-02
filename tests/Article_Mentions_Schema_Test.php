@@ -10,6 +10,8 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	public function set_up(): void {
 		parent::set_up();
 		
+		$this->set_permalink_structure( '/%postname%/' );
+		
 		add_filter( 'wpseo_should_save_indexable', '__return_true' );
 	}
 
