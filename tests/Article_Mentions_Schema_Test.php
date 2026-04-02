@@ -36,8 +36,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->go_to( \get_permalink( $source_id ) );
 
-		$this->index_links( $source_id );
-
 		$article = $this->get_article_schema( $source_id );
 
 		$this->assertArrayHasKey( 'mentions', $article );
@@ -52,8 +50,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $source_id, [] );
-
-		$this->index_links( $source_id );
 		
 		$this->go_to( \get_permalink( $source_id ) );
 		
@@ -70,8 +66,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $source_id, [] );
-
-		$this->index_links( $source_id );
 		
 		$this->go_to( \get_permalink( $source_id ) );
 		
@@ -85,13 +79,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		
 		\YoastSEO()->helpers->meta->set_value( 'schema_article_type', 'BlogPosting', $target_id );
 
-		/* Set the schema type on the target's indexable.
-		$indexable_repo = YoastSEO()->classes->get( Indexable_Repository::class );
-		$indexable      = $indexable_repo->find_by_id_and_type( $target_id, 'post' );
-		$indexable->schema_article_type = 'BlogPosting';
-		$indexable->save();
-		*/
-
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
 			'post_content' => sprintf( '<p><a href="%s">link</a></p>', get_permalink( $target_id ) ),
@@ -100,8 +87,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $target_id, [] );
 		self::factory()->post->update_object( $source_id, [] );
-
-		$this->index_links( $source_id );
 		
 		$this->go_to( \get_permalink( $source_id ) );
 		
@@ -113,20 +98,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
-
-	private function index_links( int $post_id ): void {
-		return;
-
-		$indexable_repo = YoastSEO()->classes->get( Indexable_Repository::class );
-		$link_builder   = YoastSEO()->classes->get( Indexable_Link_Builder::class );
-
-		$indexable = $indexable_repo->find_by_id_and_type( $post_id, 'post' );
-		$post      = get_post( $post_id );
-
-		$links = $link_builder->build( $indexable, $post->post_content );
-		
-		printf( '%1$s%2$d link(s) (%3$s)%1$s', PHP_EOL, count( $links ), var_export( $indexable->link_count, true ) );
-	}
 
 	private function get_schema( int $post_id ): array {
 		$this->go_to( get_permalink( $post_id ) );
