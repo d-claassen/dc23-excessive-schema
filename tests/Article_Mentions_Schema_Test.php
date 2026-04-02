@@ -87,12 +87,15 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 	public function test_article_type_is_derived_from_target_indexable(): void {
 		$target_id = self::factory()->post->create( [ 'post_status' => 'publish' ] );
+		
+		\YoastSEO()->helpers->meta->set_value( 'schema_page_type', 'ProfilePage', $target_id );
 
-		// Set the schema type on the target's indexable.
+		/* Set the schema type on the target's indexable.
 		$indexable_repo = YoastSEO()->classes->get( Indexable_Repository::class );
 		$indexable      = $indexable_repo->find_by_id_and_type( $target_id, 'post' );
 		$indexable->schema_article_type = 'BlogPosting';
 		$indexable->save();
+		*/
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
