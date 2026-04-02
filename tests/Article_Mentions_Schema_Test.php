@@ -27,8 +27,10 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => sprintf( '<p>See <a href="%s">this post</a>.</p>', $target_url ),
+			'post_content' => $post_content = sprintf( '<p>See <a href="%s">this post</a>.</p>', $target_url ),
 		] );
+		
+		var_dump( $post_content );
 		
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $target_id, [] );
