@@ -16,14 +16,19 @@ class Article_Mentions {
 		add_filter( 'wpseo_schema_article', [ $this, 'add_mentions' ], 10, 2 );
 	}
 
-	public function add_mentions( array $data, Meta_Tags_Context $context ): array {
+	public function add_mentions( $data, $context ) {
+		if ( ! ( is_array( $data ) && ( $context instanceof Meta_Tags_Context ) ) ) {
+			// Unexpected data received. Bail out.
+			return $data;
+		}
+
 		if ( ! $context->indexable ) {
 			return $data;
 		}
 
 		$links = array_filter(
 			$this->get_links_repo()->find_all_by_indexable_id( $context->indexable->id ),
-			fn( $l ) => $l->type === SEO_Links::TYPE_INTERNAL && ! empty( $l->target_post_id )
+			fn( $link ) => $link->type === SEO_Links::TYPE_INTERNAL && ! empty( $link->target_post_id )
 		);
 
 		if ( empty( $links ) ) {
