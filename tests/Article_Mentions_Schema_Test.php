@@ -122,8 +122,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		preg_match( '/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s', $output, $matches );
 
-		printf( '%1$s%2$s%1$s', PHP_EOL, $matches[0] );
-
 		return json_decode( $matches[1] ?? '{}', true );
 	}
 
