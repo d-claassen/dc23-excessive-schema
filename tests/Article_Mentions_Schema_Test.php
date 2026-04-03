@@ -54,6 +54,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->assertArrayHasKey( 'mentions', $article );
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
+		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
 	}
 
 	public function test_no_mentions_when_no_internal_links(): void {
