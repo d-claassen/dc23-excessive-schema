@@ -88,10 +88,10 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		$this->assertArrayNotHasKey( 'mentions', $article );
 	}
 
-	public function test_article_type_is_derived_from_target_indexable(): void {
+	public function test_page_type_is_derived_from_target_indexable(): void {
 		$target_id = self::factory()->post->create( [ 'post_status' => 'publish' ] );
 		
-		\YoastSEO()->helpers->meta->set_value( 'schema_article_type', 'BlogPosting', $target_id );
+		\YoastSEO()->helpers->meta->set_value( 'schema_page_type', 'ItemPage', $target_id );
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
@@ -106,7 +106,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		
 		$article = $this->get_article_schema( $source_id );
 
-		$this->assertSame( 'BlogPosting', $article['mentions'][0]['@type'] );
+		$this->assertSame( 'ItemPage', $article['mentions'][0]['@type'] );
 	}
 
 	// -------------------------------------------------------------------------
