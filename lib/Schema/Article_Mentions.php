@@ -43,9 +43,8 @@ class Article_Mentions {
 		foreach ( $links as $link ) {
 			$target     = $targets[ $link->target_post_id ] ?? null;
 			$mentions[] = [
-				'@type' => $target?->schema_article_type
-					?? $target?->schema_page_type
-					?? 'WebPage',
+				'@id'   => $link->permalink ?: $link->url,
+				'@type' => $target?->schema_page_type ?? 'WebPage',
 				'url'   => $link->permalink ?: $link->url,
 			];
 		}
