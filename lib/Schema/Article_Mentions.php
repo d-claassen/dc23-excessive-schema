@@ -50,7 +50,10 @@ class Article_Mentions {
 			];
 		}
 
-		$data['mentions'] = $mentions;
+		$data['mentions'] = array_merge(
+			( $data['mentions'] ??= [] ),
+			$mentions,
+		);
 
 		return $data;
 	}
