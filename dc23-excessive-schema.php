@@ -43,6 +43,7 @@ function init(): void {
 		return;
 	}
 	
+	( new \DC23\ExcessiveSchema\Schema\Article_Mentions() )->register();
 	( new \DC23\ExcessiveSchema\Schema\ItemList() )->register();
 	( new \DC23\ExcessiveSchema\Schema\ReadingTime() )->register();
 }
