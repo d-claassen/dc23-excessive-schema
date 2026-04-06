@@ -67,10 +67,10 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$webpage = $this->find_node_by_type( $graph, 'CollectionPage' );
 		$this->assertNotNull( $webpage, 'Should have CollectionPage node' );
 
-		// Assert WebPage has hasPart property.
-		$this->assertArrayHasKey( 'hasPart', $webpage, 'WebPage should have hasPart property' );
-		$this->assertIsArray( $webpage['hasPart'], 'hasPart should be an array' );
-		$this->assertCount( 1, $webpage['hasPart'], 'hasPart should reference 1 ItemList' );
+		// Assert WebPage has mentions property.
+		$this->assertArrayHasKey( 'mentions', $webpage, 'WebPage should have hasPart property' );
+		$this->assertIsArray( $webpage['mentions'], 'hasPart should be an array' );
+		$this->assertCount( 1, $webpage['mentions'], 'hasPart should reference 1 ItemList' );
 
 		// Find ItemList node.
 		$item_list = $this->find_node_by_type( $graph, 'ItemList' );
@@ -90,13 +90,13 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 
 			// Verify @id points to article fragment.
 			$expected_post = $this->post_ids[ count( $this->post_ids ) - $index - 1 ];
-			$expected_url = get_permalink( $expected_post );// . '#article';
+			$expected_url = get_permalink( $expected_post );
 			$this->assertSame( $expected_url, $list_item['item']['@id'], 'Should reference article @id' );
 		}
 
 		// Verify WebPage references ItemList.
 		$list_id = $item_list['@id'];
-		$this->assertSame( $list_id, $webpage['hasPart'][0]['@id'], 'WebPage should reference ItemList @id' );
+		$this->assertSame( $list_id, $webpage['mentions'][0]['@id'], 'WebPage should reference ItemList @id' );
 	}
 
 	/**
@@ -190,7 +190,7 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 
 		// Verify WebPage references both.
 		$webpage = $this->find_node_by_type( $graph, 'WebPage' );
-		$this->assertCount( 2, $webpage['hasPart'] ?? [], 'WebPage should reference 2 ItemLists' );
+		$this->assertCount( 2, $webpage['mentions'] ?? [], 'WebPage should reference 2 ItemLists' );
 	}
 
 	/**
