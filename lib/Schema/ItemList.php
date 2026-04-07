@@ -66,22 +66,12 @@ final class ItemList {
                     '@id' => $context->canonical . '#/schema/itemlist/' . sanitize_title( $list_name ),
                 ];
             }
-            
-            $list_as_side_content = ['ProfilePage', 'AboutPage', 'ItemPage'];
-            $webpage_type = (array) $webpage_data['@type'];
-            if ( ! empty( array_intersect( $webpage_type, $list_as_side_content ) ) ) {
-                $webpage_data['mentions'] = $webpage_data['mentions'] ?? [];
-                array_push(
-                    $webpage_data['mentions'],
-                    ...$references,
-                );
-            } else {
-                $webpage_data['hasPart'] = $webpage_data['hasPart'] ?? [];
-                array_push(
-                    $webpage_data['hasPart'],
-                    ...$references,
-                );
-            }
+
+            $webpage_data['mentions'] ??= [];
+            array_push(
+                $webpage_data['mentions'],
+                ...$references,
+            );
             
             return $webpage_data;
         }, 10, 2 );
