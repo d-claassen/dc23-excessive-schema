@@ -45,7 +45,7 @@ class Blog extends Abstract_Schema_Piece {
                 $blog_id = $this->context->indexable->object_id;
                 $id      = $this->context->site_url . '#/schema/blog/' . \esc_attr( $blog_id );
 
-		$category = \get_term( $id, 'category' );
+		$category = \get_term( $blog_id, 'category' );
 		\assert( $category instanceof WP_Term );
 
 		$data = [
