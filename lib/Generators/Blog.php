@@ -31,7 +31,7 @@ class Blog extends Abstract_Schema_Piece {
 			
 			// Only needed if the post has exactly 1 category.
 			// @TODO. consider blog pieces for each category.
-			$categories = \wp_get_post_categories( $this->context->object_id, [ 'fields' => 'all' ] );
+			$categories = \wp_get_post_categories( $this->context->indexable->object_id, [ 'fields' => 'all' ] );
 			if ( \count( $categories ) !== 1 ) {
 				return false;
 			}
