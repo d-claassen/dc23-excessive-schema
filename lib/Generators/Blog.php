@@ -58,8 +58,7 @@ class Blog extends Abstract_Schema_Piece {
 					'@id' => \YoastSEO()->helpers->schema->id->get_user_schema_id( $context->site_user_id, $context ),
 				],
 				'inLanguage'  => \get_bloginfo( 'language' ),
-			],
-		);
+			];
 		
 		return $data;
 	}
