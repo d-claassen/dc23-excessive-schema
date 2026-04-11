@@ -15,7 +15,7 @@ class Blog extends Abstract_Schema_Piece {
 	 * @return bool
 	 */
 	public function is_needed() {
-        if ( is_term() ) {
+        if ( is_category() ) {
             return true;
         }
 
