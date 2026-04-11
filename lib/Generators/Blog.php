@@ -45,12 +45,22 @@ class Blog extends Abstract_Schema_Piece {
                 $blog_id = $this->context->indexable->object_id;
                 $id      = $this->context->site_url . '#/schema/blog/' . \esc_attr( $blog_id );
 
+		$category = \get_term( $id, 'category' );
+		\assert( $category instanceof WP_Term );
 
-                $data = [
-                        '@type' => 'Blog,
-                        '@id'   => $id,
-                ];
-
-                return $data;
-        }
+		$data = [
+				'@id'         => $id,
+				'@type'       => 'Blog',
+				'name'        => $category->name,
+				'description' => \wp_trim_excerpt( $category->description ),
+				'publisher'   => [
+					// @todo. support company.
+					'@id' => \YoastSEO()->helpers->schema->id->get_user_schema_id( $context->site_user_id, $context ),
+				],
+				'inLanguage'  => \get_bloginfo( 'language' ),
+			],
+		);
+		
+		return $data;
+	}
 }
