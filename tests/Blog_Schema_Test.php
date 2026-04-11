@@ -58,7 +58,7 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
             'MainEntity should be Blog'
         );
 		$this->assertSame(
-			'http://localhost/#/schema/blog/2',
+			'http://localhost:8889/#/schema/blog/2',
 			$blog_piece['@id'],
 			'Format {{website}}/#/schema/{{type}}/{{ID}}'
 		);
