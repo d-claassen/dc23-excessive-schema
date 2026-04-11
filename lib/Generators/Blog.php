@@ -2,6 +2,7 @@
 
 namespace DC23\ExcessiveSchema\Generators;
 
+use \WP_Term;
 use \Yoast\WP\SEO\Generators\Schema\Abstract_Schema_Piece;
 
 /**
