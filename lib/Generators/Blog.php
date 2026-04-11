@@ -19,6 +19,10 @@ class Blog extends Abstract_Schema_Piece {
         if ( is_category() ) {
             return true;
         }
+								
+								if ( \is_single() && \get_post_type() === 'post' ) {
+									return true;
+								}
 
         return false;
 	}
