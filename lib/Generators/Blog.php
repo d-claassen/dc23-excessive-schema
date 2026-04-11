@@ -17,19 +17,29 @@ class Blog extends Abstract_Schema_Piece {
 	 * @return bool
 	 */
 	public function is_needed() {
-        if ( is_category() ) {
-            return true;
-        }
-								
-								if ( \is_single() && \get_post_type() === 'post' ) {
-										$schema_article_type = (array) $this->context->schema_article_type;
+		if ( is_category() ) {
+			return true;
+		}
 
-			if ( \in_array( 'BlogPosting', $schema_article_type, true ) ) {
-				return true;
+		if ( \is_single() && \get_post_type() === 'post' ) {
+			$schema_article_type = (array) $this->context->schema_article_type;
+
+			// Only needed in case of BlogPosting.
+			if ( ! \in_array( 'BlogPosting', $schema_article_type, true ) ) {
+				return false;
 			}
-								}
+			
+			// Only needed if the post has exactly 1 category.
+			// @TODO. consider blog pieces for each category.
+			$categories = \wp_get_post_categories( $this->context->object_id, [ 'fields' => 'all' ] );
+			if ( \count( $categories ) !== 1 ) {
+				return false;
+			}
+			
+			return true;
+		}
 
-        return false;
+		return false;
 	}
 
 	/**
