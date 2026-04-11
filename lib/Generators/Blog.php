@@ -56,7 +56,7 @@ class Blog extends Abstract_Schema_Piece {
 				'description' => \wp_trim_excerpt( $category->description ),
 				'publisher'   => [
 					// @todo. support company.
-					'@id' => \YoastSEO()->helpers->schema->id->get_user_schema_id( $context->site_user_id, $context ),
+					'@id' => \YoastSEO()->helpers->schema->id->get_user_schema_id( $this->context->site_user_id, $this->context ),
 				],
 				'inLanguage'  => \get_bloginfo( 'language' ),
 			];
