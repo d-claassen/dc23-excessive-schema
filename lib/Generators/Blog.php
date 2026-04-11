@@ -54,7 +54,22 @@ class Blog extends Abstract_Schema_Piece {
                 $blog_id = $this->context->indexable->object_id;
                 $id      = $this->context->site_url . '#/schema/blog/' . \esc_attr( $blog_id );
 
-		$category = \get_term( \get_query_var( 'cat' ), 'category' );
+		if ( \is_category() ) {
+			$category = \get_term( \get_query_var( 'cat' ), 'category' );
+		} else{
+			$post = \get_post( \get_the_ID() );
+			\assert( $post instanceof WP_Post );
+
+			$categories = \wp_get_post_categories( $post->ID, [ 'fields' => 'all' ] );
+			if ( \count( $categories ) !== 1 ) {
+				// Only add Blog piece when there's one category:
+				// - Without category, there's no blog to connect with,
+				// - With multiple categories, it'll be a PITA to make sense.
+				return [];
+			}
+
+			$category = \reset( $categories );
+		}
 		\assert( $category instanceof WP_Term );
 
 		$data = [
