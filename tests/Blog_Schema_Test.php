@@ -1,6 +1,6 @@
 <?php
 
-namespace DC23\ExcessiveSvhema\Tests;
+namespace DC23\ExcessiveSchema\Tests;
 
 /**
  * Class Blog_Schema_Test.
@@ -227,7 +227,7 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 		$nodes_of_type = array_filter( $graph, fn( $piece ) => $piece['@type'] === $type );
 
 		if ( empty( $nodes_of_type ) ) {
-			throw new InvalidArgumentException( 'No piece found for type' );
+			throw new \InvalidArgumentException( 'No piece found for type' );
 		}
 
 		// Return first instance.
