@@ -86,6 +86,9 @@ class Blog extends Abstract_Schema_Piece {
 			];
 			
 			if ( \isset( $post ) ) {
+				$id      = \get_permalink( $post->ID ) . '#article';
+				$post_id = [ '@id' => $id ];
+
 				$data[	'blogPost' ] = [ $post_id ];
 			}
 		
