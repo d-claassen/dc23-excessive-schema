@@ -85,7 +85,7 @@ class Blog extends Abstract_Schema_Piece {
 				'inLanguage'  => \get_bloginfo( 'language' ),
 			];
 			
-			if ( \isset( $post ) ) {
+			if ( isset( $post ) ) {
 				$id      = \get_permalink( $post->ID ) . '#article';
 				$post_id = [ '@id' => $id ];
 
