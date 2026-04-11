@@ -85,7 +85,7 @@ class Blog extends Abstract_Schema_Piece {
 				'inLanguage'  => \get_bloginfo( 'language' ),
 			];
 			
-			if ( ! \is_category() ) {
+			if ( \isset( $post ) ) {
 				$data[	'blogPost' ] = [ $post_id ];
 			}
 		
