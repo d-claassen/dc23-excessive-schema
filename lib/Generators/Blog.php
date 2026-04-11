@@ -21,7 +21,11 @@ class Blog extends Abstract_Schema_Piece {
         }
 								
 								if ( \is_single() && \get_post_type() === 'post' ) {
-									return true;
+										$schema_article_type = (array) $this->context->schema_article_type;
+
+			if ( \in_array( 'BlogPosting', $schema_article_type, true ) ) {
+				return true;
+			}
 								}
 
         return false;
