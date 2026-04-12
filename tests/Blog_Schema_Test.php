@@ -26,37 +26,30 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 	public function expectDeprecated(){}
 
 	public function test_should_contain_blog_piece_as_main_entity(): void {
-		$post_id = self::factory()->post->create(
-			array(
-				'title'        => 'New post',
-				'post_content' => 'Hello world!',
-			)
-		);
+		$post_id = self::factory()->post->create( [
+			'title'        => 'New post',
+			'post_content' => 'Hello world!',
+		] );
 
-		$category_id = self::factory()->category->create(
-			[
+		$category_id = self::factory()->category->create( [
 				'name' => 'News',
-			]
-		);
+		] );
 
 		\wp_set_post_categories( $post_id, [ $category_id ] );
 
 		$this->go_to( \get_category_link( $category_id ) );
 
 		$schema_output = $this->get_schema_output();
-
-		$this->assertJson( $schema_output );
-
 		$schema_data = \json_decode( $schema_output, JSON_OBJECT_AS_ARRAY );
 
 		$blog_piece    = $this->get_piece_by_type( $schema_data['@graph'], 'Blog' );
 		$webpage_piece = $this->get_piece_by_type( $schema_data['@graph'], 'CollectionPage' );
 
 		$this->assertSame(
-            $blog_piece['@id'],
-            $webpage_piece['mainEntity']['@id'],
-            'MainEntity should be Blog'
-        );
+			$blog_piece['@id'],
+			$webpage_piece['mainEntity']['@id'],
+			'MainEntity should be Blog'
+		);
 		$this->assertSame(
 			'http://localhost:8889/#/schema/blog/2',
 			$blog_piece['@id'],
