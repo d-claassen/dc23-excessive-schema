@@ -39,7 +39,7 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 
 		$this->go_to( \get_category_link( $category_id ) );
 
-		$schema_output = $this->get_schema_output();
+		$schema_output = $this->get_schema_output( true );
 		$schema_data = \json_decode( $schema_output, JSON_OBJECT_AS_ARRAY );
 
 		$blog_piece    = $this->get_piece_by_type( $schema_data['@graph'], 'Blog' );
