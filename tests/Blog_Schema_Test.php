@@ -11,7 +11,7 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 
 	private $user_id;
 
-	public function setUp(): void {
+	public function __setUp(): void {
 		parent::setUp();
 
 		// Yoast user settings
