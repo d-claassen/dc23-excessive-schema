@@ -43,9 +43,9 @@ class Blog extends Abstract_Schema_Piece {
 	}
 
 	/**
-	 * Generate pieces for thr graph.
+	 * Generate pieces for the graph.
 	 *
-	 * @return array<list<string, mixed>>
+	 * @return list<array<string, mixed>>
 	 */
 	public function generate() {
 		$graph = [];
@@ -61,9 +61,9 @@ class Blog extends Abstract_Schema_Piece {
 	 *
 	 * @return array<sting, mixed>
 	 */
-        protected function generate_blog(): array {
-                $blog_id = $this->context->indexable->object_id;
-                $id      = $this->context->site_url . '#/schema/blog/' . \esc_attr( $blog_id );
+	protected function generate_blog(): array {
+		$blog_id = $this->context->indexable->object_id;
+		$id      = $this->context->site_url . '#/schema/blog/' . \esc_attr( $blog_id );
 
 		if ( \is_category() ) {
 			$category = \get_term( \get_query_var( 'cat' ), 'category' );
