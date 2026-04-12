@@ -88,9 +88,12 @@ class Blog extends Abstract_Schema_Piece {
 				'@type'       => 'Blog',
 				'name'        => $category->name,
 				'description' => \wp_trim_excerpt( $category->description ),
-				'publisher' => $this->context->site_represents_reference,
 				'inLanguage'  => \get_bloginfo( 'language' ),
 			];
+			
+			if ( $this->context->site_represents !== false ) {
+				$data['publisher'] = $this->context->site_represents_reference;
+			}
 			
 			if ( isset( $post ) ) {
 				$id      = \get_permalink( $post->ID ) . '#article';
