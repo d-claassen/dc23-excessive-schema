@@ -15,6 +15,7 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 		parent::setUp();
 
 		\YoastSEO()->helpers->options->set( 'company_or_person', 'company' );
+		\YoastSEO()->helpers->options->set( 'company_name', 'company' );
 		return;
 
 		// Yoast user settings
