@@ -11,8 +11,11 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 
 	private $user_id;
 
-	public function __setUp(): void {
+	public function setUp(): void {
 		parent::setUp();
+
+		\YoastSEO()->helpers->options->set( 'company_or_person', 'company' );
+		return;
 
 		// Yoast user settings
 		$this->user_id = self::factory()->user->create();
