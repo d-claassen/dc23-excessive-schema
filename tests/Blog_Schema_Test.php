@@ -44,7 +44,7 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 
 		$blog_piece    = $this->get_piece_by_type( $schema_data['@graph'], 'Blog' );
 		$webpage_piece = $this->get_piece_by_type( $schema_data['@graph'], 'CollectionPage' );
-		$org_piece     = $this->get_piece_by_type( $schema_data['@graph'], ['Organization', 'Person'] );
+		$org_piece     = $this->get_piece_by_type( $schema_data['@graph'], ['Person', 'Organization'] );
 
 		$this->assertSame(
 			$blog_piece['@id'],
