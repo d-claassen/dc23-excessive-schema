@@ -88,10 +88,7 @@ class Blog extends Abstract_Schema_Piece {
 				'@type'       => 'Blog',
 				'name'        => $category->name,
 				'description' => \wp_trim_excerpt( $category->description ),
-				'publisher'   => [
-					// @todo. support company. replace with: site_represents_reference
-					'@id' => \YoastSEO()->helpers->schema->id->get_user_schema_id( $this->context->site_user_id, $this->context ),
-				],
+				'publisher' => $this->context->site_represents_reference,
 				'inLanguage'  => \get_bloginfo( 'language' ),
 			];
 			
