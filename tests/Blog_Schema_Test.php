@@ -128,7 +128,7 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 		$this->assertSame($article_piece['@id'], $blog_piece['blogPost'][0]['@id'],'Blog should refer to BlogPosting');
 		
 		$this->assertSame(
-			'http://localhost:8889/#/schema/blog/3',
+			'http://localhost:8889/#/schema/blog/2',
 			$blog_piece['@id'],
 			'Blog @id format {{website}}/#/schema/{{type}}/{{ID}}'
 		);
