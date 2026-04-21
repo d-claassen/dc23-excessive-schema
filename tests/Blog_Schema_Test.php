@@ -103,6 +103,12 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 			)
 		);
 
+		$category_id = self::factory()->category->create( [
+				'name' => 'News',
+		] );
+
+		\wp_set_post_categories( $post_id, [ $category_id ] );
+
 		// Set the default Schema.org article type for the post type "post" to BlogPosting.
 		\YoastSEO()->helpers->options->set( 'schema-article-type-post', 'BlogPosting' );
 
@@ -122,7 +128,7 @@ class Blog_Schema_Test extends \WP_UnitTestCase {
 		$this->assertSame($article_piece['@id'], $blog_piece['blogPost'][0]['@id'],'Blog should refer to BlogPosting');
 		
 		$this->assertSame(
-			'http://localhost:8889/#/schema/blog/2',
+			'http://localhost:8889/#/schema/blog/3',
 			$blog_piece['@id'],
 			'Blog @id format {{website}}/#/schema/{{type}}/{{ID}}'
 		);
