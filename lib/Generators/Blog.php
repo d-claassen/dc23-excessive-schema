@@ -62,8 +62,6 @@ class Blog extends Abstract_Schema_Piece {
 	 * @return array<sting, mixed>
 	 */
 	protected function generate_blog(): array {
-		$blog_id = $this->context->indexable->object_id;
-		$id      = $this->context->site_url . '#/schema/blog/' . \esc_attr( $blog_id );
 
 		if ( \is_category() ) {
 			$category = \get_term( \get_query_var( 'cat' ), 'category' );
@@ -82,6 +80,9 @@ class Blog extends Abstract_Schema_Piece {
 			$category = \reset( $categories );
 		}
 		\assert( $category instanceof WP_Term );
+
+		$blog_id = $category->term_id;
+		$id      = $this->context->site_url . '#/schema/blog/' . \esc_attr( $blog_id );
 
 		$data = [
 				'@id'         => $id,
