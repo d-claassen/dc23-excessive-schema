@@ -1,6 +1,6 @@
 <?php
 
-namespace DC23\ExcessiveSchema\Schema;
+namespace DC23\ExcessiveSchema\Integrations;
 
 use Yoast\WP\SEO\Context\Meta_Tags_Context;
 use Yoast\WP\SEO\Models\SEO_Links;
