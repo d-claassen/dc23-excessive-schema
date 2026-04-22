@@ -44,9 +44,9 @@ function init(): void {
 	}
 	
 	( new \DC23\ExcessiveSchema\Integrations\Blog() )->register();
-	( new \DC23\ExcessiveSchema\Schema\Article_Mentions() )->register();
-	( new \DC23\ExcessiveSchema\Schema\ItemList() )->register();
-	( new \DC23\ExcessiveSchema\Schema\ReadingTime() )->register();
+	( new \DC23\ExcessiveSchema\Integrations\Article_Mentions() )->register();
+	( new \DC23\ExcessiveSchema\Integrations\ItemList() )->register();
+	( new \DC23\ExcessiveSchema\Integrations\ReadingTime() )->register();
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
