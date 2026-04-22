@@ -5,7 +5,7 @@ namespace DC23\ExcessiveSchema\Integrations;
 final class ItemList {
 
     public function register(): void {
-        add_filter( 'wpseo_schema_block_core/query', [ $this, 'render_itemlist_schema' ], 10, 3 );
+        // add_filter( 'wpseo_schema_block_core/query', [ $this, 'render_itemlist_schema' ], 10, 3 );
         
         add_action( 'wpseo_pre_schema_block_type_core/query', [ $this, 'prepare_itemlist_references' ], 10, 1 );
     }
@@ -61,10 +61,14 @@ final class ItemList {
         add_filter( 'wpseo_schema_webpage', function( $webpage_data, $context ) use ( $blocks ) {
             $references = [];
             foreach ( $blocks as $query_loop_block ) {
+                /*
                 $list_name = $this->resolve_name( $query_loop_block );
                 $references[] = [
                     '@id' => $context->canonical . '#/schema/itemlist/' . sanitize_title( $list_name ),
                 ];
+                */
+                
+                $references = $this->render_itemlist_schema( $references, $query_loop_block, $context );
             }
 
             $webpage_data['mentions'] ??= [];

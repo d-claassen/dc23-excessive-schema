@@ -73,7 +73,8 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$this->assertCount( 1, $webpage['mentions'], 'hasPart should reference 1 ItemList' );
 
 		// Find ItemList node.
-		$item_list = $this->find_node_by_type( $graph, 'ItemList' );
+		// $item_list = $this->find_node_by_type( $graph, 'ItemList' );
+		$item_list = $webpage['mentions'][0];
 		$this->assertNotNull( $item_list, 'Should have ItemList node' );
 
 		// Assert ItemList structure.
@@ -95,8 +96,8 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		}
 
 		// Verify WebPage references ItemList.
-		$list_id = $item_list['@id'];
-		$this->assertSame( $list_id, $webpage['mentions'][0]['@id'], 'WebPage should reference ItemList @id' );
+		// $list_id = $item_list['@id'];
+		// $this->assertSame( $list_id, $webpage['mentions'][0]['@id'], 'WebPage should reference ItemList @id' );
 	}
 
 	/**
@@ -115,7 +116,9 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$graph  = $schema['@graph'];
 
 		// Find ItemList node.
-		$item_list = $this->find_node_by_type( $graph, 'ItemList' );
+		// $item_list = $this->find_node_by_type( $graph, 'ItemList' );
+		$webpage   = $this->find_node_by_type( $graph, 'WebPage' );
+		$item_list = $webpage['mentions'][0];
 		$this->assertNotNull( $item_list, 'Should have ItemList node' );
 
 		// Assert ItemList structure.
@@ -138,7 +141,9 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$graph  = $schema['@graph'];
 
 		// Find ItemList node.
-		$item_list = $this->find_node_by_type( $graph, 'ItemList' );
+		// $item_list = $this->find_node_by_type( $graph, 'ItemList' );
+		$webpage   = $this->find_node_by_type( $graph, 'WebPage' );
+		$item_list = $webpage['mentions'][0];
 		$this->assertNotNull( $item_list, 'Should have ItemList node' );
 
 		// Assert ItemList structure.
@@ -185,12 +190,14 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$graph  = $schema['@graph'];
 
 		// Find all ItemList nodes.
-		$item_lists = array_filter( $graph, fn( $node ) => ( $node['@type'] ?? '' ) === 'ItemList' );
+		// $item_lists = array_filter( $graph, fn( $node ) => ( $node['@type'] ?? '' ) === 'ItemList' );
+		$webpage    = $this->find_node_by_type( $graph, 'WebPage' );
+		$item_lists = $webpage['mentions'];
 		$this->assertCount( 2, $item_lists, 'Should have 2 ItemList nodes' );
 
 		// Verify WebPage references both.
-		$webpage = $this->find_node_by_type( $graph, 'WebPage' );
-		$this->assertCount( 2, $webpage['mentions'] ?? [], 'WebPage should reference 2 ItemLists' );
+		// $webpage = $this->find_node_by_type( $graph, 'WebPage' );
+		// $this->assertCount( 2, $webpage['mentions'] ?? [], 'WebPage should reference 2 ItemLists' );
 	}
 
 	/**
@@ -215,6 +222,10 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$item_lists = array_filter( $graph, fn( $node ) => ( $node['@type'] ?? '' ) === 'ItemList' );
 
 		$this->assertCount( 0, $item_lists, 'Should have no ItemList nodes' );
+
+		// Verify WebPage references none.
+		$webpage = $this->find_node_by_type( $graph, 'WebPage' );
+		$this->assertCount( 0, $webpage['mentions'] ?? [], 'WebPage should reference no ItemLists' );
 	}
 
 	/**
