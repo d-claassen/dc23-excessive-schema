@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 
-namespace DC23\ExcessiveSchema\Schema;
+namespace DC23\ExcessiveSchema\Integrations;
 
 final class ItemList {
 
