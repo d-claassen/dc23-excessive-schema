@@ -7,13 +7,28 @@ use Yoast\WP\SEO\Models\SEO_Links;
 use Yoast\WP\SEO\Repositories\Indexable_Repository;
 use Yoast\WP\SEO\Repositories\SEO_Links_Repository;
 
-class Article_Mentions {
+class SEO_Links_As_Mentions {
 
 	private Indexable_Repository $indexable_repo;
 	private SEO_Links_Repository $links_repo;
 
 	public function register(): void {
 		add_filter( 'wpseo_schema_article', [ $this, 'add_mentions' ], 10, 2 );
+		add_filter( 'wpseo_schema_webpage', [ $this, 'add_webpage_mentions' ], 10, 2 );
+	}
+	
+	public function add_webpage_mentions( $data, $context ) {
+		if ( ! ( $context instanceof Meta_Tags_Context ) ) {
+			// Unexpected data received. Bail out.
+			return $data;
+		}
+		
+		if ( $context->has_article ) {
+			// Will enrich the Article instead.
+			return $data;
+		}
+		
+		return $this->add_mentions( $data, $context );
 	}
 
 	public function add_mentions( $data, $context ) {

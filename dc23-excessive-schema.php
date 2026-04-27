@@ -44,7 +44,7 @@ function init(): void {
 	}
 	
 	( new \DC23\ExcessiveSchema\Integrations\Blog() )->register();
-	( new \DC23\ExcessiveSchema\Integrations\Article_Mentions() )->register();
+	( new \DC23\ExcessiveSchema\Integrations\SEO_Links_As_Mentions() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\ItemList() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\ReadingTime() )->register();
 }
