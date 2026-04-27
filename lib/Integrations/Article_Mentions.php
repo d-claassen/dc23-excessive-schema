@@ -13,18 +13,18 @@ class Article_Mentions {
 	private SEO_Links_Repository $links_repo;
 
 	public function register(): void {
-		add_filter( 'wpseo_schema_article', [ $this, 'add_article_mentions' ], 10, 2 );
+		add_filter( 'wpseo_schema_article', [ $this, 'add_mentions' ], 10, 2 );
 		add_filter( 'wpseo_schema_webpage', [ $this, 'add_webpage_mentions' ], 10, 2 );
 	}
 	
-	public function add_article_mentions( $data, $context ) {
+	public function add_webpage_mentions( $data, $context ) {
 		if ( ! ( $context instanceof Meta_Tags_Context ) ) {
 			// Unexpected data received. Bail out.
 			return $data;
 		}
 		
-		if ( ! $context->has_article() ) {
-			// No Article to enrich.
+		if ( $context->has_article ) {
+			// Will enrich the Article instead.
 			return $data;
 		}
 		
