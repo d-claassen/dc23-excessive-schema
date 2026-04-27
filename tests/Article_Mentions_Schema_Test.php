@@ -56,7 +56,30 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
 		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
 	}
+	
+	public function test_mentions_added_to_webpage(): void {
+		$target_id  = self::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$target_url = get_permalink( $target_id );
 
+		$source_id = self::factory()->post->create( [
+			'post_status'  => 'publish',
+			'post_type'    => 'page',
+			'post_content' => sprintf( '<p>See <a href="%s">this post</a>.</p>', $target_url ),
+		] );
+		
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $target_id, [] );
+		self::factory()->post->update_object( $source_id, [] );
+
+		$this->go_to( \get_permalink( $source_id ) );
+
+		$webpage = $this->get_webpage_schema( $source_id );
+
+		$this->assertArrayHasKey( 'mentions', $webpage );
+		$this->assertSame( $target_url, $webpage['mentions'][0]['url'] );
+		$this->assertSame( $target_url, $webpage['mentions'][0]['@id'] );
+	}
+	
 	public function test_no_mentions_when_no_internal_links(): void {
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
@@ -131,6 +154,18 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		foreach ( $schema['@graph'] ?? [] as $piece ) {
 			if ( isset( $piece['@type'] ) && $piece['@type'] === 'Article' ) {
+				return $piece;
+			}
+		}
+
+		return null;
+	}
+	
+	private function get_webpage_schema( int $post_id ): ?array {
+		$schema = $this->get_schema( $post_id );
+
+		foreach ( $schema['@graph'] ?? [] as $piece ) {
+			if ( isset( $piece['@type'] ) && $piece['@type'] === 'WebPage' ) {
 				return $piece;
 			}
 		}
