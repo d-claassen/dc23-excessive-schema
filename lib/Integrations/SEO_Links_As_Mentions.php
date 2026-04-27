@@ -7,7 +7,7 @@ use Yoast\WP\SEO\Models\SEO_Links;
 use Yoast\WP\SEO\Repositories\Indexable_Repository;
 use Yoast\WP\SEO\Repositories\SEO_Links_Repository;
 
-class Article_Mentions {
+class SEO_Links_As_Mentions {
 
 	private Indexable_Repository $indexable_repo;
 	private SEO_Links_Repository $links_repo;
