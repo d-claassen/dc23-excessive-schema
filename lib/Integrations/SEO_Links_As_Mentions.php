@@ -54,20 +54,15 @@ class SEO_Links_As_Mentions {
 		$targets    = $this->get_indexable_repo()->find_by_multiple_ids_and_type( $target_ids, 'post' );
 		$targets    = array_column( $targets, null, 'object_id' );
 
-		$mentions = [];
+		$data['mentions'] ??= [];
 		foreach ( $links as $link ) {
 			$target     = $targets[ $link->target_post_id ] ?? null;
-			$mentions[] = [
+			$data['mentions'][] = [
 				'@id'   => $link->permalink ?: $link->url,
 				'@type' => $target?->schema_page_type ?? 'WebPage',
 				'url'   => $link->permalink ?: $link->url,
 			];
 		}
-
-		$data['mentions'] = array_merge(
-			( $data['mentions'] ??= [] ),
-			$mentions,
-		);
 
 		return $data;
 	}
