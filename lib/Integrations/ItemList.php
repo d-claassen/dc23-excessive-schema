@@ -24,13 +24,10 @@ final class ItemList {
             // @TODO. Collect all meta at once wit for_posts(), and loop over the meta instead 
             $post_context = \YoastSEO()->meta->for_post( $post_id );
             $page_type    = $post_context->schema_page_type;
-            $main_entity   = $post_context->main_entity_of_page;
-            
             
 			$items[] = [
 				'@type'    => 'ListItem',
 				'position' => $i + 1,
-                '_item' => $main_entity,
 				'item'     => [
                     '@id'   => \get_permalink( $post_id ),
                     '@type' => $page_type,
