@@ -43,7 +43,7 @@ class SEO_Links_As_Mentions {
 
 		$links = array_filter(
 			$this->get_links_repo()->find_all_by_indexable_id( $context->indexable->id ),
-			fn( $link ) => $link->type === SEO_Links::TYPE_INTERNAL && ! empty( $link->target_post_id )
+			fn( $link ) => $link->type === SEO_Links::TYPE_INTERNAL
 		);
 
 		if ( empty( $links ) ) {
