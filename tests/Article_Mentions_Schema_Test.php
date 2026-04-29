@@ -97,7 +97,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->go_to( \get_permalink( $source_id ) );
 
-		$article = $this->get_article_schema( $source_id );
+		$article = $this->get_article_schema( $source_id, true );
 
 		$this->assertArrayHasKey( 'mentions', $article );
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
@@ -184,7 +184,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	// Helpers
 	// -------------------------------------------------------------------------
 
-	private function get_schema( int $post_id ): array {
+	private function get_schema( int $post_id, bool $debug = false ): array {
 		$this->go_to( get_permalink( $post_id ) );
 
 		ob_start();
@@ -193,11 +193,15 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		preg_match( '/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s', $output, $matches );
 
+		if ( $debug ) {
+			var_dump( $matches[0] ?? 'no matches' );
+		}
+
 		return json_decode( $matches[1] ?? '{}', true );
 	}
 
-	private function get_article_schema( int $post_id ): ?array {
-		$schema = $this->get_schema( $post_id );
+	private function get_article_schema( int $post_id, bool $debug = false ): ?array {
+		$schema = $this->get_schema( $post_id, $debug );
 
 		foreach ( $schema['@graph'] ?? [] as $piece ) {
 			if ( isset( $piece['@type'] ) && $piece['@type'] === 'Article' ) {
