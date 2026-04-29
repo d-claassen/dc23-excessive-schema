@@ -79,6 +79,31 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
 	}
 	
+	public function test_absolute_mentions_added_for_relative_links(): void {
+		$target_id  = self::factory()->post->create( [
+			'post_status' => 'publish',
+			'post_name'   => 'awesome-post',
+		] );
+		$target_url = get_permalink( $target_id );
+
+		$source_id = self::factory()->post->create( [
+			'post_status'  => 'publish',
+			'post_content' => sprintf( '<p>See <a href="%s">this awesome post</a>.</p>', '/awesome-post/' ),
+		] );
+		
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $target_id, [] );
+		self::factory()->post->update_object( $source_id, [] );
+
+		$this->go_to( \get_permalink( $source_id ) );
+
+		$article = $this->get_article_schema( $source_id, true );
+
+		$this->assertArrayHasKey( 'mentions', $article );
+		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
+		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
+	}
+
 	public function test_mentions_added_to_webpage(): void {
 		$target_id  = self::factory()->post->create( [ 'post_status' => 'publish' ] );
 		$target_url = get_permalink( $target_id );
@@ -159,7 +184,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	// Helpers
 	// -------------------------------------------------------------------------
 
-	private function get_schema( int $post_id ): array {
+	private function get_schema( int $post_id, bool $debug = false ): array {
 		$this->go_to( get_permalink( $post_id ) );
 
 		ob_start();
@@ -168,11 +193,15 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		preg_match( '/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s', $output, $matches );
 
+		if ( $debug ) {
+			var_dump( $matches[0] ?? 'no matches' );
+		}
+
 		return json_decode( $matches[1] ?? '{}', true );
 	}
 
-	private function get_article_schema( int $post_id ): ?array {
-		$schema = $this->get_schema( $post_id );
+	private function get_article_schema( int $post_id, bool $debug = false ): ?array {
+		$schema = $this->get_schema( $post_id, $debug );
 
 		foreach ( $schema['@graph'] ?? [] as $piece ) {
 			if ( isset( $piece['@type'] ) && $piece['@type'] === 'Article' ) {

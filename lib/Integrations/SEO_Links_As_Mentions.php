@@ -56,11 +56,17 @@ class SEO_Links_As_Mentions {
 
 		$data['mentions'] ??= [];
 		foreach ( $links as $link ) {
-			$target     = $targets[ $link->target_post_id ] ?? null;
+			$target    = $targets[ $link->target_post_id ] ?? null;
+			$permalink = $link->url;
+			if ( \YoastSEO()->helpers->url->is_relative( $permalink ) ) {
+				// Prepend the relative url with the home url.
+				$permalink = home_url( $permalink );
+			}
+
 			$data['mentions'][] = [
-				'@id'   => $link->permalink ?: $link->url,
+				'@id'   => $permalink,
 				'@type' => $target?->schema_page_type ?? 'WebPage',
-				'url'   => $link->permalink ?: $link->url,
+				'url'   => $permalink,
 			];
 		}
 
