@@ -56,6 +56,28 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
 		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
 	}
+
+	public function test_mentions_added_for_internal_taxonomy_links(): void {
+		$target_id  = self::factory()->category->create( [ 'name' => 'News' ] );
+		$target_url = get_category_link( $category_id );
+
+		$source_id = self::factory()->post->create( [
+			'post_status'  => 'publish',
+			'post_content' => sprintf( '<p>See <a href="%s">this taxonomy</a>.</p>', $target_url ),
+		] );
+		
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $target_id, [] );
+		self::factory()->post->update_object( $source_id, [] );
+
+		$this->go_to( \get_permalink( $source_id ) );
+
+		$article = $this->get_article_schema( $source_id );
+
+		$this->assertArrayHasKey( 'mentions', $article );
+		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
+		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
+	}
 	
 	public function test_mentions_added_to_webpage(): void {
 		$target_id  = self::factory()->post->create( [ 'post_status' => 'publish' ] );
