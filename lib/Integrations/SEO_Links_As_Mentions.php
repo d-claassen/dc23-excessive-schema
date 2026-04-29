@@ -57,7 +57,12 @@ class SEO_Links_As_Mentions {
 		$data['mentions'] ??= [];
 		foreach ( $links as $link ) {
 			$target     = $targets[ $link->target_post_id ] ?? null;
-			$permalink = \YoastSEO()->helpers->url->ensure_absolute_url( $link->permalink ?: $link->url );
+
+			$url = $link->permalink ?: $link->url;
+			$permalink = \YoastSEO()->helpers->url->ensure_absolute_url( $url );
+			if ( \YoastSEO()->helpers->url->is_relative( $url ) ) {
+				$permalink = home_url( $url );
+			}
 
 			$data['mentions'][] = [
 				'@id'   => $permalink,
