@@ -59,7 +59,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 	public function test_mentions_added_for_internal_taxonomy_links(): void {
 		$target_id  = self::factory()->category->create( [ 'name' => 'News' ] );
-		$target_url = get_category_link( $category_id );
+		$target_url = get_category_link( $target_id );
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
