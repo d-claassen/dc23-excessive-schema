@@ -80,8 +80,10 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	}
 	
 	public function test_absolute_mentions_added_for_relative_links(): void {
-		$target_id  = self::factory()->category->create( [ 'name' => 'News' ] );
-		$target_url = get_category_link( $target_id );
+		$target_id  = self::factory()->post->create( [
+			'post_status' => 'publish',
+		] );
+		$target_url = get_permalink( $target_id );
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
