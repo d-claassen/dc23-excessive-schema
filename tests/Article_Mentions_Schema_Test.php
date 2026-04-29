@@ -82,12 +82,13 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	public function test_absolute_mentions_added_for_relative_links(): void {
 		$target_id  = self::factory()->post->create( [
 			'post_status' => 'publish',
+			'post_name'   => 'awesome-post',
 		] );
 		$target_url = get_permalink( $target_id );
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => sprintf( '<p>See <a href="%s">this taxonomy</a>.</p>', '/news/' ),
+			'post_content' => sprintf( '<p>See <a href="%s">this awesome post</a>.</p>', '/awesome-post/' ),
 		] );
 		
 		// Update object to persist meta value to indexable.
