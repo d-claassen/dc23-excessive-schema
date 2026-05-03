@@ -78,7 +78,7 @@ final class Query_Loop_Schema_Test extends \WP_UnitTestCase {
 		$this->assertNotNull( $item_list, 'Should have ItemList node' );
 
 		// Assert ItemList structure.
-		$this->assertSame( 'http://localhost:8889/?p=' . $page_id . '#/schema/itemlist/1', $item_list['@id'], 'ItemList id should match query id' );
+		$this->assertSame( 'http://localhost:8889/?page_id=' . $page_id . '#/schema/itemlist/1', $item_list['@id'], 'ItemList id should match query id' );
 		$this->assertSame( 'Recent Articles', $item_list['name'], 'ItemList name should match heading' );
 		$this->assertArrayHasKey( 'itemListElement', $item_list, 'ItemList should have items' );
 		$this->assertCount( 3, $item_list['itemListElement'], 'ItemList should have 3 items' );
