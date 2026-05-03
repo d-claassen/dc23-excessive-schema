@@ -11,7 +11,7 @@ final class ItemList {
     }
     
     public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
-        $post_ids  = $this->resolve_post_ids( $query_loop_block['attrs']['query'] ?? [] );
+        $post_ids = $this->resolve_post_ids( $query_loop_block['attrs']['query'] ?? [] );
 
         // No content in this block.
         if ( empty( $post_ids ) ) {
@@ -19,7 +19,6 @@ final class ItemList {
         }
 
         $items = [];
-        $list_name = $this->resolve_name( $query_loop_block );
         foreach ( $post_ids as $i => $post_id ) {
             // @TODO. Collect all meta at once wit for_posts(), and loop over the meta instead 
             $post_context = \YoastSEO()->meta->for_post( $post_id );
@@ -35,11 +34,13 @@ final class ItemList {
 			];
 		}
 
+        $query_id  = $query_loop_block['attrs']['queryId'];
+        $list_name = $this->resolve_name( $query_loop_block );
+        
         array_push(
             $graph,
             [
-                // @TODO. use queryId attr as identifier.
-                '@id' => $context->canonical . '#/schema/itemlist/' . sanitize_title( $list_name ),
+                '@id' => $context->canonical . '#/schema/itemlist/' . $query_id,
                 '@type' => 'ItemList',
                 'name' => $list_name,
                 'itemListElement' => $items,
@@ -59,9 +60,9 @@ final class ItemList {
             $references = [];
             foreach ( $blocks as $query_loop_block ) {
                 /*
-                $list_name = $this->resolve_name( $query_loop_block );
+                $query_id     = $query_loop_block['attrs']['queryId'];
                 $references[] = [
-                    '@id' => $context->canonical . '#/schema/itemlist/' . sanitize_title( $list_name ),
+                    '@id' => $context->canonical . '#/schema/itemlist/' . $query_id,
                 ];
                 */
                 
