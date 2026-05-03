@@ -2,7 +2,7 @@
 
 namespace DC23\ExcessiveSchema\Integrations;
 
-final class ItemList {
+final class Query_As_ItemList {
 
     public function register(): void {
         // add_filter( 'wpseo_schema_block_core/query', [ $this, 'render_itemlist_schema' ], 10, 3 );
