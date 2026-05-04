@@ -25,9 +25,8 @@ This plugin uses **Model C**. It mirrors how Yoast already works for SEO meta
 
 For schema specifically, the override layer is deferred. Source plugins are
 trusted to produce correct schema and stable `@id`s. If a source plugin’s output
-is broken, the corresponding glue plugin (`dc23-tea` for TEC,
-`dc23-software-downloads` for EDD, etc.) is responsible for fixing it — not
-this plugin.
+is broken, the corresponding glue plugin (`dc23-tea`, `dc23-software-downloads`,
+etc.) is responsible for fixing it — not this plugin.
 
 ## Responsibilities
 
