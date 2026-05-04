@@ -236,9 +236,9 @@ Per-field configurable precedence is not built initially.
 
 ## Soft dependency convention
 
-Glue plugins (`dc23-tea`, `dc23-software-downloads`, future adapters) do
-**not** hard-depend on `dc23-excessive-schema`. They register via `add_action`
-and silently no-op when this plugin is inactive. They retain their other
+Glue plugins (`dc23-tea`, `dc23-software-downloads`, future adapters) do **not**
+hard-depend on `dc23-excessive-schema`. They register via `add_action` and
+silently no-op when this plugin is inactive. They retain their other
 responsibilities (TEC integration, EDD integration, etc.) independently.
 
 ## Roadmap (informative, not normative)
