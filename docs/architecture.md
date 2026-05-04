@@ -173,10 +173,10 @@ add_action( 'dc23_schema_register_adapters', function() {
 } );
 ```
 
-`dc23_schema_register_adapter()` calls the adapter’s `bootstrap()` method
-automatically after registering it. The bridge is installed as a side-effect
-of registration; consumers can’t forget to wire it up.
-
+`dc23_schema_register_adapter()` calls the adapter’s
+`setup_main_entity_enrichment()` method automatically after registering it.
+The bridge is installed as a side-effect of registration; consumers can’t
+forget to wire it up.
 If `dc23-excessive-schema` is inactive, the action never fires, the adapter
 isn’t registered, and its bridging never installs. The glue plugin continues
 to function.
