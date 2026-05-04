@@ -13,10 +13,10 @@ It does **not** generate schema for things other plugins already handle.
 
 Three models were considered:
 
-- **A. Read source data only** — minimal, but blocks any field the source plugin
+- **A. Read source data only**. minimal, but blocks any field the source plugin
   doesn’t track.
-- **B. Own all schema data** — maximum control, massive duplication, drift inevitable.
-- **C. Source-derived with user overrides** — read what source plugins already
+- **B. Own all schema data**. maximum control, massive duplication, drift inevitable.
+- **C. Source-derived with user overrides**. read what source plugins already
   produce, allow Yoast-sidebar overrides on top, add fields the source plugin
   doesn’t track.
 
