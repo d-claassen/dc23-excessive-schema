@@ -152,11 +152,9 @@ class TEC_Adapter implements Main_Entity_Adapter {
 Each source plugin gets a similarly small bridge in its own glue plugin:
 
 - `dc23-tea` bridges `tribe_json_ld_event_object` (object input, three args).
-- `dc23-software-downloads` bridges whatever filter it exposes around EDD
-  (EDD has no native schema filter, so the glue plugin creates one).
+- `dc23-software-downloads` bridges whatever filter it exposes around EDD.
 - A built-in adapter for Yoast’s Article bridges `wpseo_schema_article`
   (array input, two args). Lives in this plugin as a reference implementation.
-- A future Woo adapter would bridge `woocommerce_structured_data_product`.
 
 Common patterns may emerge across these bridges. Helpers will be extracted
 once a real pattern crystallises across multiple adapters, not in advance.
