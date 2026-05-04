@@ -6,9 +6,8 @@
 linking between main entities via `mentions`, supporting non-`Article` post types in
 schema, and (later) providing a UI for type and subtype selection on any post type.
 
-It does this by acting as a thin coordination layer over existing schema
-producers. It does **not** generate schema for things other plugins already
-handle.
+It does this by acting as a thin coordination layer over existing schema producers.
+It does **not** generate schema for things other plugins already handle.
 
 ## Model: source-derived with overrides (Model C)
 
