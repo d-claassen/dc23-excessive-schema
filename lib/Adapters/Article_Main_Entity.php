@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace DC23\ExcessiveSchema\Adapters;
 
+use Yoast\WP\SEO\Config\Schema_IDs;
 use Yoast\WP\SEO\Context\Meta_Tags_Context;
 use Yoast\WP\SEO\Models\Indexable;
 
@@ -31,7 +32,7 @@ final class Article_Main_Entity implements Main_Entity {
 		if ( \YoastSEO()->helpers->url->is_relative( $permalink ) ) {
 			$permalink = home_url( $permalink );
 		}
-		return $permalink . '#article';
+		return $permalink . Schema_IDs::ARTICLE_HASH;
 	}
 
 	/**
