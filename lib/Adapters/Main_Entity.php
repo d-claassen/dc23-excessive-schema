@@ -39,19 +39,20 @@ interface Main_Entity {
 	 */
 	public function get_entity_id( Indexable $indexable ): string;
 
-	/**
-	 * The effective schema.org type for a specific indexable.
-	 *
-	 * Resolves to the actual subtype the source plugin would render for this
-	 * instance — for example, "BlogPosting" for an Article whose user-selected
-	 * subtype is BlogPosting.
-	 *
-	 * Returns null when the source plugin would not render a main entity node
-	 * for this indexable (e.g. Yoast's "None" article type selection). Callers
-	 * should fall back to a WebPage reference in that case.
-	 *
-	 * @param Indexable $indexable The indexable to resolve.
-	 */
+    /**
+     * The `@id` of the main entity node for the given indexable.
+     *
+     * Must return an absolute URL. Adapters working with indexable permalinks
+     * should absolutise relative values (Yoast may store relative permalinks
+     * for some configurations).
+     *
+     * Used by mentions and other reference logic to link to the entity rather
+     * than the WebPage that contains it.
+     *
+     * @param Indexable $indexable The indexable to resolve.
+     *
+     * @return string The `@id` value.
+     */
 	public function get_entity_type( Indexable $indexable ): ?string;
 
 	/**
