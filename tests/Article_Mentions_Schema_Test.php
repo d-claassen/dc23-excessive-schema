@@ -88,7 +88,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => sprintf( '<p>See <a href="%s">this awesome post</a>.</p>', '/awesome-post/' ),
+			'post_content' => $post_content = sprintf( '<p>See <a href="%s">this awesome post</a>.</p>', $target_url ),
 		] );
 		
 		// Update object to persist meta value to indexable.
@@ -101,6 +101,7 @@ $links_repo       = \YoastSEO()->classes->get( \Yoast\WP\SEO\Repositories\SEO_Li
 $links            = $links_repo->find_all_by_indexable_id( $source_indexable->id );
 
 fwrite( STDERR, sprintf( "\nSource indexable id: %s\n", $source_indexable->id ) );
+fwrite( STDERR, sprintf( "\nSource post content: %s\n", $post_content ) );
 fwrite( STDERR, sprintf( "Target post id: %s\n", $target_id ) );
 fwrite( STDERR, sprintf( "Number of links found: %d\n", count( $links ) ) );
 
