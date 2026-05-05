@@ -20,10 +20,10 @@ namespace DC23\ExcessiveSchema\Integrations;
 final class Main_Entity_Registration {
 
 	public function register(): void {
-		add_action( 'init', array( $this, 'fire_registration_action' ), 20 );
+		add_action( 'init', array( $this, 'collect_main_entity_adapters' ), 20 );
 	}
 
-	public function fire_registration_action(): void {
+	public function collect_main_entity_adapters(): void {
 		/**
 		 * Fires when main entities should register themselves.
 		 *
