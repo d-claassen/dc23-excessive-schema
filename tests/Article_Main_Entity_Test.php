@@ -22,23 +22,29 @@ final class Article_Main_Entity_Test extends WP_UnitTestCase {
 		parent::set_up();
 	}
 
+	/**
+	 * Override WordPress function that's incompatible with PHPUnit 10+.
+	 */
+	public function expectDeprecated(): void {
+	}
+
 	public function test_article_main_entity_registered_for_post_post_type(): void {
-        // Verify Article is registered.
+		// Verify Article is registered.
 		$this->assertTrue(
 			dc23_schema_main_entity_exists( 'post' ),
 			'Article main entity should be registered for the "post" post type.'
 		);
 
-        // Verify basics.
+		// Verify basics.
 		$main_entity = dc23_schema_get_main_entity( 'post' );
 		$this->assertInstanceOf( Article_Main_Entity::class, $main_entity );
 		$this->assertSame( 'Article', $main_entity->get_root_type() );
         
-        // Create an indexable.
+		// Create an indexable.
 		$post_id   = self::factory()->post->create( [ 'post_status' => 'publish' ] );
 		$indexable = \YoastSEO()->meta->for_post( $post_id )->context->indexable;
         
-        // Verify id creation.
+		// Verify id creation.
 		$entity_id = $main_entity->get_entity_id( $indexable );
 		$this->assertStringEndsWith( '#article', $entity_id );
 		$this->assertStringStartsWith( $indexable->permalink, $entity_id );
@@ -58,8 +64,8 @@ final class Article_Main_Entity_Test extends WP_UnitTestCase {
 		);
 
 		$post_id = self::factory()->post->create( [
-            'post_title'  => 'Test article',
-            'post_status' => 'publish',
+			'post_title'  => 'Test article',
+			'post_status' => 'publish',
 		] );
 
 		// Fetch the Yoast schema, which runs relevant filters.
