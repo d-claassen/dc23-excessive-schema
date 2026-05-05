@@ -17,7 +17,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		// Enable indexables to allow internal links between then being set.
 		add_filter( 'wpseo_should_save_indexable', '__return_true' );
 		
-		// Create test user for publisher. Needed for Article ouput from sordpress-seo below 26.7.
+		// Create test user for publisher. Needed for Article ouput from wordpress-seo below 26.7.
 		$this->user_id = self::factory()->user->create( [
 			'display_name' => 'Test User',
 			'user_email'   => 'test@example.com',
