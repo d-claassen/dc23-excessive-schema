@@ -83,13 +83,21 @@ class SEO_Links_As_Mentions {
 			return $data;
 		}
 
-		$target_ids = array_column( $links, 'target_post_id' );
-		$targets    = $this->get_indexable_repo()->find_by_multiple_ids_and_type( $target_ids, 'post' );
-		$targets    = array_column( $targets, null, 'object_id' );
+		// Resolve targets by their indexable id, not by target_post_id (which
+		// is also used for term ids and would cause collisions with posts
+		// sharing the same numeric id).
+		$indexable_ids = array_filter( array_column( $links, 'target_indexable_id' ) );
+		$targets       = [];
+		if ( ! empty( $indexable_ids ) ) {
+			$targets = $this->get_indexable_repo()->find_by_ids( $indexable_ids );
+			$targets = array_column( $targets, null, 'id' );
+		}
 
 		$data['mentions'] ??= [];
 		foreach ( $links as $link ) {
-			$target    = $targets[ $link->target_post_id ] ?? null;
+			$target    = ! empty( $link->target_indexable_id )
+				? ( $targets[ $link->target_indexable_id ] ?? null )
+				: null;
 			$permalink = $link->url;
 			if ( \YoastSEO()->helpers->url->is_relative( $permalink ) ) {
 				$permalink = home_url( $permalink );
