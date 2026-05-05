@@ -40,6 +40,21 @@ interface Main_Entity {
 	public function get_entity_id( Indexable $indexable ): string;
 
 	/**
+	 * The effective schema.org type for a specific indexable.
+	 *
+	 * Resolves to the actual subtype the source plugin would render for this
+	 * instance — for example, "BlogPosting" for an Article whose user-selected
+	 * subtype is BlogPosting.
+	 *
+	 * Returns null when the source plugin would not render a main entity node
+	 * for this indexable (e.g. Yoast's "None" article type selection). Callers
+	 * should fall back to a WebPage reference in that case.
+	 *
+	 * @param Indexable $indexable The indexable to resolve.
+	 */
+	public function get_entity_type( Indexable $indexable ): ?string;
+
+	/**
 	 * Subtypes of the root type that are valid for this post type.
 	 *
 	 * Returns null when no constraint applies (any subtype of the root type is allowed).
