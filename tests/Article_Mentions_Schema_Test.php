@@ -100,6 +100,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		$article = $this->get_article_schema( $source_id, true );
 
 		$this->assertArrayHasKey( 'mentions', $article );
+		$this->assertSame( 'Article', $article['mentions'][0]['@type'] );
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
 		$this->assertSame( $target_url . '#article', $article['mentions'][0]['@id'] );
 	}
