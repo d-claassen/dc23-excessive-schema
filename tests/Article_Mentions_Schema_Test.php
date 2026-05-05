@@ -54,7 +54,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->assertArrayHasKey( 'mentions', $article );
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
-		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
+		$this->assertSame( $target_url . '#article', $article['mentions'][0]['@id'] );
 	}
 
 	public function test_mentions_added_for_internal_taxonomy_links(): void {
@@ -101,7 +101,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->assertArrayHasKey( 'mentions', $article );
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
-		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
+		$this->assertSame( $target_url . '#article', $article['mentions'][0]['@id'] );
 	}
 
 	public function test_mentions_added_to_webpage(): void {
@@ -124,7 +124,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->assertArrayHasKey( 'mentions', $webpage );
 		$this->assertSame( $target_url, $webpage['mentions'][0]['url'] );
-		$this->assertSame( $target_url, $webpage['mentions'][0]['@id'] );
+		$this->assertSame( $target_url . '#article', $webpage['mentions'][0]['@id'] );
 	}
 	
 	public function test_no_mentions_when_no_internal_links(): void {
@@ -160,7 +160,10 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	}
 
 	public function test_page_type_is_derived_from_target_indexable(): void {
-		$target_id = self::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$target_id = self::factory()->post->create( [
+			'post_status' => 'publish',
+			'post_type'   => 'page',
+	 ] );
 		
 		\YoastSEO()->helpers->meta->set_value( 'schema_page_type', 'ItemPage', $target_id );
 
