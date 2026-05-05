@@ -1,11 +1,16 @@
 <?php
 
+declare( strict_types=1 );
+
 namespace DC23\ExcessiveSchema\Integrations;
 
 use Yoast\WP\SEO\Context\Meta_Tags_Context;
+use Yoast\WP\SEO\Models\Indexable;
 use Yoast\WP\SEO\Models\SEO_Links;
 use Yoast\WP\SEO\Repositories\Indexable_Repository;
 use Yoast\WP\SEO\Repositories\SEO_Links_Repository;
+
+use function DC23\ExcessiveSchema\dc23_schema_get_main_entity;
 
 class SEO_Links_As_Mentions {
 
@@ -13,27 +18,42 @@ class SEO_Links_As_Mentions {
 	private SEO_Links_Repository $links_repo;
 
 	public function register(): void {
-		add_filter( 'wpseo_schema_article', [ $this, 'add_mentions' ], 10, 2 );
+		add_filter( 'dc23_schema_main_entity', [ $this, 'add_main_entity_mentions' ], 10, 2 );
 		add_filter( 'wpseo_schema_webpage', [ $this, 'add_webpage_mentions' ], 10, 2 );
 	}
-	
-	public function add_webpage_mentions( $data, $context ) {
-		if ( ! ( $context instanceof Meta_Tags_Context ) ) {
-			// Unexpected data received. Bail out.
+
+	/**
+	 * Adds mentions to a main entity node via the uniform mutation point.
+	 *
+	 * @param array     $data      Main entity schema data.
+	 * @param Indexable $indexable The indexable being rendered.
+	 *
+	 * @return array
+	 */
+	public function add_main_entity_mentions( $data, $indexable ) {
+		if ( ! is_array( $data ) || ! ( $indexable instanceof Indexable ) ) {
 			return $data;
 		}
-		
-		if ( $context->has_article ) {
-			// Will enrich the Article instead.
-			return $data;
-		}
-		
-		return $this->add_mentions( $data, $context );
+
+		return $this->add_mentions_for_indexable( $data, $indexable );
 	}
 
-	public function add_mentions( $data, $context ) {
-		if ( ! ( is_array( $data ) && ( $context instanceof Meta_Tags_Context ) ) ) {
-			// Unexpected data received. Bail out.
+	/**
+	 * Adds mentions to the WebPage node when no main entity will render.
+	 *
+	 * Skipped when a main entity is registered for the current post type AND
+	 * that main entity will actually render for this indexable. When a main
+	 * entity is registered but resolves to no effective type for this
+	 * instance (e.g. Yoast's "None" article type), the WebPage receives the
+	 * mentions instead so they aren't lost.
+	 *
+	 * @param array             $data    WebPage schema data.
+	 * @param Meta_Tags_Context $context Yoast context.
+	 *
+	 * @return array
+	 */
+	public function add_webpage_mentions( $data, $context ) {
+		if ( ! ( $context instanceof Meta_Tags_Context ) ) {
 			return $data;
 		}
 
@@ -41,8 +61,21 @@ class SEO_Links_As_Mentions {
 			return $data;
 		}
 
+		$post_type = $context->indexable->object_sub_type;
+		if ( is_string( $post_type ) && $post_type !== '' ) {
+			$main_entity = dc23_schema_get_main_entity( $post_type );
+			if ( $main_entity !== null && $main_entity->get_entity_type( $context->indexable ) !== null ) {
+				// A registered main entity will render and receive the mentions.
+				return $data;
+			}
+		}
+
+		return $this->add_mentions_for_indexable( $data, $context->indexable );
+	}
+
+	private function add_mentions_for_indexable( array $data, Indexable $indexable ): array {
 		$links = array_filter(
-			$this->get_links_repo()->find_all_by_indexable_id( $context->indexable->id ),
+			$this->get_links_repo()->find_all_by_indexable_id( $indexable->id ),
 			fn( $link ) => $link->type === SEO_Links::TYPE_INTERNAL
 		);
 
@@ -50,27 +83,62 @@ class SEO_Links_As_Mentions {
 			return $data;
 		}
 
-		$target_ids = array_column( $links, 'target_post_id' );
-		$targets    = $this->get_indexable_repo()->find_by_multiple_ids_and_type( $target_ids, 'post' );
-		$targets    = array_column( $targets, null, 'object_id' );
+		// Resolve targets by their indexable id, not by target_post_id (which
+		// is also used for term ids and would cause collisions with posts
+		// sharing the same numeric id).
+		$indexable_ids = array_filter( array_column( $links, 'target_indexable_id' ) );
+		$targets       = [];
+		if ( ! empty( $indexable_ids ) ) {
+			$targets = $this->get_indexable_repo()->find_by_ids( $indexable_ids );
+			$targets = array_column( $targets, null, 'id' );
+		}
 
 		$data['mentions'] ??= [];
 		foreach ( $links as $link ) {
-			$target    = $targets[ $link->target_post_id ] ?? null;
+			$target    = ! empty( $link->target_indexable_id )
+				? ( $targets[ $link->target_indexable_id ] ?? null )
+				: null;
 			$permalink = $link->url;
 			if ( \YoastSEO()->helpers->url->is_relative( $permalink ) ) {
-				// Prepend the relative url with the home url.
 				$permalink = home_url( $permalink );
 			}
 
-			$data['mentions'][] = [
-				'@id'   => $permalink,
-				'@type' => $target?->schema_page_type ?? 'WebPage',
-				'url'   => $permalink,
-			];
+			$data['mentions'][] = $this->build_mention_reference( $target, $permalink );
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Builds a single mention reference, pointing at the target's main entity
+	 * node when one is registered and renders, falling back to the WebPage @id
+	 * otherwise.
+	 *
+	 * @param Indexable|null $target    The target indexable, or null when not resolved.
+	 * @param string         $permalink The absolute permalink to the target.
+	 *
+	 * @return array{'@id': string, '@type': string, url: string}
+	 */
+	private function build_mention_reference( ?Indexable $target, string $permalink ): array {
+		if ( $target !== null && is_string( $target->object_sub_type ) && $target->object_sub_type !== '' ) {
+			$main_entity = dc23_schema_get_main_entity( $target->object_sub_type );
+			if ( $main_entity !== null ) {
+				$entity_type = $main_entity->get_entity_type( $target );
+				if ( $entity_type !== null ) {
+					return [
+						'@id'   => $main_entity->get_entity_id( $target ),
+						'@type' => $entity_type,
+						'url'   => $permalink,
+					];
+				}
+			}
+		}
+
+		return [
+			'@id'   => $permalink,
+			'@type' => $target?->schema_page_type ?? 'WebPage',
+			'url'   => $permalink,
+		];
 	}
 
 	private function get_links_repo(): SEO_Links_Repository {

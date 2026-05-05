@@ -17,7 +17,21 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		// Enable indexables to allow internal links between then being set.
 		add_filter( 'wpseo_should_save_indexable', '__return_true' );
 		
-		// Create test user for publisher. Needed for Article ouput from sordpress-seo below 26.7.
+		// Workaround for Yoast bug where relative urls arent resolved for home_url values
+		// with a port in it due to poor absolute url construction.
+		add_filter( 'home_url', static function ( $url ) {
+    $parts = wp_parse_url( $url );
+    if ( ! isset( $parts['port'] ) ) {
+        return $url;
+    }
+    $rebuilt = $parts['scheme'] . '://' . $parts['host'];
+    if ( isset( $parts['path'] ) ) {
+        $rebuilt .= $parts['path'];
+    }
+    return $rebuilt;
+		} );
+		
+		// Create test user for publisher. Needed for Article ouput from wordpress-seo below 26.7.
 		$this->user_id = self::factory()->user->create( [
 			'display_name' => 'Test User',
 			'user_email'   => 'test@example.com',
@@ -54,7 +68,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->assertArrayHasKey( 'mentions', $article );
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
-		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
+		$this->assertSame( $target_url . '#article', $article['mentions'][0]['@id'] );
 	}
 
 	public function test_mentions_added_for_internal_taxonomy_links(): void {
@@ -88,7 +102,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => sprintf( '<p>See <a href="%s">this awesome post</a>.</p>', '/awesome-post/' ),
+			'post_content' => $post_content = sprintf( '<p>See <a href="%s">this awesome post</a>.</p>', '/awesome-post/' ),
 		] );
 		
 		// Update object to persist meta value to indexable.
@@ -100,8 +114,9 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		$article = $this->get_article_schema( $source_id, true );
 
 		$this->assertArrayHasKey( 'mentions', $article );
+		$this->assertSame( 'Article', $article['mentions'][0]['@type'] );
 		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
-		$this->assertSame( $target_url, $article['mentions'][0]['@id'] );
+		$this->assertSame( $target_url . '#article', $article['mentions'][0]['@id'] );
 	}
 
 	public function test_mentions_added_to_webpage(): void {
@@ -124,7 +139,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->assertArrayHasKey( 'mentions', $webpage );
 		$this->assertSame( $target_url, $webpage['mentions'][0]['url'] );
-		$this->assertSame( $target_url, $webpage['mentions'][0]['@id'] );
+		$this->assertSame( $target_url . '#article', $webpage['mentions'][0]['@id'] );
 	}
 	
 	public function test_no_mentions_when_no_internal_links(): void {
@@ -160,7 +175,10 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 	}
 
 	public function test_page_type_is_derived_from_target_indexable(): void {
-		$target_id = self::factory()->post->create( [ 'post_status' => 'publish' ] );
+		$target_id = self::factory()->post->create( [
+			'post_status' => 'publish',
+			'post_type'   => 'page',
+	 ] );
 		
 		\YoastSEO()->helpers->meta->set_value( 'schema_page_type', 'ItemPage', $target_id );
 
