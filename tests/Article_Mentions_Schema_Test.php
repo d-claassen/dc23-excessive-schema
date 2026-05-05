@@ -88,7 +88,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$source_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => $post_content = sprintf( '<p>See <a href="%s">this awesome post</a>.</p>', $target_url ),
+			'post_content' => $post_content = sprintf( '<p>See <a href="%s">this awesome post</a>.</p>', '/awesome-post/' ),
 		] );
 		
 		// Update object to persist meta value to indexable.
@@ -96,25 +96,12 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		self::factory()->post->update_object( $source_id, [] );
 
 
-$source_indexable = \YoastSEO()->meta->for_post( $source_id )->context->indexable;
-$links_repo       = \YoastSEO()->classes->get( \Yoast\WP\SEO\Repositories\SEO_Links_Repository::class );
-$links            = $links_repo->find_all_by_indexable_id( $source_indexable->id );
-
-fwrite( STDERR, sprintf( "\nSource indexable id: %s\n", $source_indexable->id ) );
-fwrite( STDERR, sprintf( "\nSource post content: %s\n", $post_content ) );
-fwrite( STDERR, sprintf( "Target post id: %s\n", $target_id ) );
-fwrite( STDERR, sprintf( "Number of links found: %d\n", count( $links ) ) );
-
-foreach ( $links as $i => $link ) {
-    fwrite( STDERR, sprintf(
-        "Link #%d: type=%s url=%s target_post_id=%s target_indexable_id=%s\n",
-        $i,
-        $link->type,
-        $link->url,
-        var_export( $link->target_post_id, true ),
-        var_export( $link->target_indexable_id, true )
-    ) );
-}
+fwrite( STDERR, "home_url(): " . home_url() . "\n" );
+fwrite( STDERR, "home_url('/awesome-post/'): " . home_url( '/awesome-post/' ) . "\n" );
+fwrite( STDERR, "url_to_postid('/awesome-post/'): " . url_to_postid( '/awesome-post/' ) . "\n" );
+fwrite( STDERR, "url_to_postid(home_url('/awesome-post/')): " . url_to_postid( home_url( '/awesome-post/' ) ) . "\n" );
+fwrite( STDERR, "url_to_postid('http://localhost/awesome-post/'): " . url_to_postid( 'http://localhost/awesome-post/' ) . "\n" );
+fwrite( STDERR, "url_to_postid('http://localhost:8889/awesome-post/'): " . url_to_postid( 'http://localhost:8889/awesome-post/' ) . "\n" );
 
 
 		$this->go_to( \get_permalink( $source_id ) );
