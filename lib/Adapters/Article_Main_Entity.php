@@ -31,16 +31,7 @@ final class Article_Main_Entity implements Main_Entity {
 	}
 
 	public function get_allowed_subtypes(): ?array {
-		// Schema.org Article subtypes commonly used for blog and news content.
-		return array(
-			'Article',
-			'BlogPosting',
-			'NewsArticle',
-			'Report',
-			'ScholarlyArticle',
-			'SocialMediaPosting',
-			'TechArticle',
-		);
+		return null;
 	}
 
 	public function setup_main_entity_enrichment(): void {
