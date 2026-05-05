@@ -95,6 +95,27 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		self::factory()->post->update_object( $target_id, [] );
 		self::factory()->post->update_object( $source_id, [] );
 
+
+$source_indexable = \YoastSEO()->meta->for_post( $source_id )->context->indexable;
+$links_repo       = \YoastSEO()->classes->get( \Yoast\WP\SEO\Repositories\SEO_Links_Repository::class );
+$links            = $links_repo->find_all_by_indexable_id( $source_indexable->id );
+
+fwrite( STDERR, sprintf( "\nSource indexable id: %s\n", $source_indexable->id ) );
+fwrite( STDERR, sprintf( "Target post id: %s\n", $target_id ) );
+fwrite( STDERR, sprintf( "Number of links found: %d\n", count( $links ) ) );
+
+foreach ( $links as $i => $link ) {
+    fwrite( STDERR, sprintf(
+        "Link #%d: type=%s url=%s target_post_id=%s target_indexable_id=%s\n",
+        $i,
+        $link->type,
+        $link->url,
+        var_export( $link->target_post_id, true ),
+        var_export( $link->target_indexable_id, true )
+    ) );
+}
+
+
 		$this->go_to( \get_permalink( $source_id ) );
 
 		$article = $this->get_article_schema( $source_id, true );
