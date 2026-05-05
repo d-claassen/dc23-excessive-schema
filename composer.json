@@ -4,6 +4,9 @@
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "autoload": {
+        "files": [
+            "lib/functions.php"
+        ],
         "psr-4": {
             "DC23\\ExcessiveSchema\\": "lib/"
         }
