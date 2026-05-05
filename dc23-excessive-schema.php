@@ -43,6 +43,7 @@ function init(): void {
 		return;
 	}
 	
+	( new \DC23\ExcessiveSchema\Integrations\Main_Entity_Registration() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\Blog() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\SEO_Links_As_Mentions() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\Query_As_ItemList() )->register();
