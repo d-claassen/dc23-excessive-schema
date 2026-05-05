@@ -7,7 +7,7 @@
 
 declare( strict_types=1 );
 
-namespace DC23\ExcessiveSchema\Registries;
+namespace DC23\ExcessiveSchema\Registries\Exceptions;
 
 use RuntimeException;
 
