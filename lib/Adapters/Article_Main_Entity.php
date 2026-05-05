@@ -27,7 +27,11 @@ final class Article_Main_Entity implements Main_Entity {
 	}
 
 	public function get_entity_id( Indexable $indexable ): string {
-		return $indexable->permalink . '#article';
+		$permalink = $indexable->permalink;
+		if ( \YoastSEO()->helpers->url->is_relative( $permalink ) ) {
+			$permalink = home_url( $permalink );
+		}
+		return $permalink . '#article';
 	}
 
 	/**
