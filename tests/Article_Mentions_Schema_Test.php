@@ -17,6 +17,20 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		// Enable indexables to allow internal links between then being set.
 		add_filter( 'wpseo_should_save_indexable', '__return_true' );
 		
+		// Workaround for Yoast bug where relative urls arent resolved for home_url values
+		// with a port in it due to poor absolute url construction.
+		add_filter( 'home_url', static function ( $url ) {
+    $parts = wp_parse_url( $url );
+    if ( ! isset( $parts['port'] ) ) {
+        return $url;
+    }
+    $rebuilt = $parts['scheme'] . '://' . $parts['host'];
+    if ( isset( $parts['path'] ) ) {
+        $rebuilt .= $parts['path'];
+    }
+    return $rebuilt;
+		} );
+		
 		// Create test user for publisher. Needed for Article ouput from wordpress-seo below 26.7.
 		$this->user_id = self::factory()->user->create( [
 			'display_name' => 'Test User',
@@ -94,15 +108,6 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $target_id, [] );
 		self::factory()->post->update_object( $source_id, [] );
-
-
-fwrite( STDERR, "home_url(): " . home_url() . "\n" );
-fwrite( STDERR, "home_url('/awesome-post/'): " . home_url( '/awesome-post/' ) . "\n" );
-fwrite( STDERR, "url_to_postid('/awesome-post/'): " . url_to_postid( '/awesome-post/' ) . "\n" );
-fwrite( STDERR, "url_to_postid(home_url('/awesome-post/')): " . url_to_postid( home_url( '/awesome-post/' ) ) . "\n" );
-fwrite( STDERR, "url_to_postid('http://localhost/awesome-post/'): " . url_to_postid( 'http://localhost/awesome-post/' ) . "\n" );
-fwrite( STDERR, "url_to_postid('http://localhost:8889/awesome-post/'): " . url_to_postid( 'http://localhost:8889/awesome-post/' ) . "\n" );
-
 
 		$this->go_to( \get_permalink( $source_id ) );
 
