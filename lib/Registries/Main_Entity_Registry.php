@@ -30,14 +30,14 @@ final class Main_Entity_Registry {
 	 * Register a main entity for a post type.
 	 *
 	 * @throws InvalidArgumentException When the post type is empty.
-	 * @throws Main_Entity_Already_Registered When the post type already has a main entity.
+	 * @throws Exceptions\Main_Entity_Already_Registered When the post type already has a main entity.
 	 */
 	public static function register( string $post_type, Main_Entity $main_entity ): void {
 		if ( $post_type === '' ) {
 			throw new InvalidArgumentException( 'Cannot register a main entity for an empty post type.' );
 		}
 		if ( isset( self::$entities[ $post_type ] ) ) {
-			throw Main_Entity_Already_Registered::for_post_type( $post_type );
+			throw Exceptions\Main_Entity_Already_Registered::for_post_type( $post_type );
 		}
 
 		self::$entities[ $post_type ] = $main_entity;
