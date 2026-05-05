@@ -62,15 +62,47 @@ final class Article_Main_Entity_Test extends WP_UnitTestCase {
             'post_status' => 'publish',
 		] );
 
-        // Go to the post page to have Yoast output schema and run relevant filters.
-        $this->go_to( get_permalink( $post_id ) );
+		// Fetch the Yoast schema, which runs relevant filters.
+		$article = $this->get_article_schema( $post_id );
 
-        // Verify Article schema has the marker.
+		// Verify Article schema has the marker.
 		$this->assertTrue(
-			$data['_test_marker'] ?? false,
+			$article['_test_marker'] ?? false,
 			'dc23_schema_main_entity should fire when wpseo_schema_article is applied.'
 		);
 		$this->assertNotNull( $captured_indexable, 'Indexable should be passed to the filter.' );
 		$this->assertSame( $post_id, $captured_indexable->object_id );
+	}
+
+	// -------------------------------------------------------------------------
+	// Helpers
+	// -------------------------------------------------------------------------
+
+	private function get_schema( int $post_id, bool $debug = false ): array {
+		$this->go_to( get_permalink( $post_id ) );
+
+		ob_start();
+		do_action( 'wpseo_head' );
+		$output = ob_get_clean();
+
+		preg_match( '/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s', $output, $matches );
+
+		if ( $debug ) {
+			var_dump( $matches[0] ?? 'no matches' );
+		}
+
+		return json_decode( $matches[1] ?? '{}', true );
+	}
+
+	private function get_article_schema( int $post_id, bool $debug = false ): ?array {
+		$schema = $this->get_schema( $post_id, $debug );
+
+		foreach ( $schema['@graph'] ?? [] as $piece ) {
+			if ( isset( $piece['@type'] ) && $piece['@type'] === 'Article' ) {
+				return $piece;
+			}
+		}
+
+		return null;
 	}
 }
