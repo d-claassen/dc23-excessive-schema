@@ -30,6 +30,32 @@ final class Article_Main_Entity implements Main_Entity {
 		return $indexable->permalink . '#article';
 	}
 
+	/**
+	 * Resolves the Article subtype following Yoast's resolution chain:
+	 * per-post override → per-post-type default → root type.
+	 *
+	 * Yoast's "None" selection (meaning "do not render Article schema for
+	 * this post") is translated to null at this boundary so callers don't
+	 * need to know about Yoast's string convention.
+	 */
+	public function get_entity_type( Indexable $indexable ): ?string {
+		$override = get_post_meta( $indexable->object_id, '_yoast_wpseo_schema_article_type', true );
+		if ( is_string( $override ) && $override !== '' ) {
+			return $override === 'None' ? null : $override;
+		}
+
+		if ( is_string( $indexable->object_sub_type ) && $indexable->object_sub_type !== '' ) {
+			$default = YoastSEO()->helpers->options->get(
+				'schema-article-type-' . $indexable->object_sub_type
+			);
+			if ( is_string( $default ) && $default !== '' ) {
+				return $default === 'None' ? null : $default;
+			}
+		}
+
+		return $this->get_root_type();
+	}
+
 	public function get_allowed_subtypes(): ?array {
 		return null;
 	}
