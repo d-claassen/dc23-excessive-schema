@@ -120,7 +120,16 @@ class SEO_Links_As_Mentions {
 	 * @return array{'@id': string, '@type': string, url: string}
 	 */
 	private function build_mention_reference( ?Indexable $target, string $permalink ): array {
-		if ( $target !== null && is_string( $target->object_sub_type ) && $target->object_sub_type !== '' ) {
+		// Skip post-type archives: they have no valuable main entities today. Some archive types
+		// could legitimately be main entities in the future (PodcastSeries for /podcast/, 
+		// ProductCollection for /products/, etc.), at which point this guard should become
+		// registry-driven, not hardcoded. This just ensures the archive won't receive the type of the
+		// single post.
+		if ( $target !== null
+			&& $target->object_type !== 'post-type-archive'
+			&& is_string( $target->object_sub_type )
+			&& $target->object_sub_type !== ''
+		) {
 			$main_entity = dc23_schema_get_main_entity( $target->object_sub_type );
 			if ( $main_entity !== null ) {
 				$entity_type = $main_entity->get_entity_type( $target );
