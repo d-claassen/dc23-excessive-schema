@@ -145,9 +145,27 @@ class SEO_Links_As_Mentions {
 
 		return [
 			'@id'   => $permalink,
-			'@type' => $target?->schema_page_type ?? 'WebPage',
+			'@type' => $target?->schema_page_type ?? $this->infer_page_type( $target ),
 			'url'   => $permalink,
 		];
+	}
+	
+	/**
+	 * Infers the schema page type for non-post indexables that don't store
+	 * a schema_page_type. Mirrors what Yoast emits at render time based on
+	 * indexable type: terms and archives are CollectionPages, users are
+	 * ProfilePages. Returns WebPage as the safe fallback.
+	 */
+	private function infer_page_type( ?Indexable $target ): string {
+		if ( $target === null ) {
+			return 'WebPage';
+		}
+
+		return match ( $target->object_type ) {
+			'term', 'post-type-archive', 'date-archive' => 'CollectionPage',
+			'user'  => 'ProfilePage',
+			default => 'WebPage',
+		};
 	}
 
 	private function get_links_repo(): SEO_Links_Repository {
