@@ -105,17 +105,6 @@ class SEO_Links_As_Mentions {
 
 			$data['mentions'][] = $this->build_mention_reference( $target, $permalink );
 		}
-		
-		
-$links = $this->get_links_repo()
-    ->find_all_by_indexable_id( $indexable->id );
-foreach ( $links as $link ) {
-    fwrite( STDERR, sprintf(
-        "Link: url=%s target_indexable_id=%s\n",
-        $link->url,
-        var_export( $link->target_indexable_id, true )
-    ) );
-}
 
 		return $data;
 	}
