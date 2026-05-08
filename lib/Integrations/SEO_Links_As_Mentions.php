@@ -107,7 +107,7 @@ class SEO_Links_As_Mentions {
 		}
 		
 		
-$links = $this->get_links_repository()
+$links = $this->get_links_repo()
     ->find_all_by_indexable_id( $indexable->id );
 foreach ( $links as $link ) {
     fwrite( STDERR, sprintf(
