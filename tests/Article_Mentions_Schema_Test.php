@@ -225,7 +225,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		] );
 		self::factory()->post->update_object( $source_id, [] );
 
-		$data = $this->get_article_schema( $source_id );
+		$data = $this->get_article_schema( $source_id, true );
 		$this->assertCount( 4, $data['mentions'] ?? [], 'Expected one mention per internal link.' );
 
 		$types_by_url = array_column( $data['mentions'] ?? [], '@type', 'url' );
