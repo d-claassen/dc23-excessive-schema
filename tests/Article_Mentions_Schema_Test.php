@@ -197,6 +197,44 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->assertSame( 'ItemPage', $article['mentions'][0]['@type'] );
 	}
+	public function test_webpage_types_for_non_post_targets(): void {
+		$category_id = self::factory()->category->create( [ 'name' => 'News' ] );
+
+		self::factory()->post->create( [
+			'post_status'   => 'publish',
+			'post_author'   => $this->user_id,
+			'post_category' => [ $category_id ],
+			'post_date'     => '2024-03-15 10:00:00',
+		] );
+		self::factory()->post->update_object( $this->user_id, [] );
+
+		$category_url     = get_category_link( $category_id );
+		$author_url       = get_author_posts_url( $this->user_id );
+		$date_archive_url = get_month_link( 2024, 3 );
+		$home_url         = home_url( '/' );
+
+		$source_id = self::factory()->post->create( [
+			'post_status'  => 'publish',
+			'post_content' => sprintf(
+				'<p>Links: <a href="%s">cat</a>, <a href="%s">author</a>, <a href="%s">date</a>, <a href="%s">home</a>.</p>',
+				esc_url( $category_url ),
+				esc_url( $author_url ),
+				esc_url( $date_archive_url ),
+				esc_url( $home_url )
+			),
+		] );
+		self::factory()->post->update_object( $source_id, [] );
+
+		$data = $this->get_article_schema( $source_id, true );
+		$this->assertCount( 4, $data['mentions'] ?? [], 'Expected one mention per internal link.' );
+
+		$types_by_url = array_column( $data['mentions'] ?? [], '@type', 'url' );
+
+		$this->assertSame( 'CollectionPage', $types_by_url[ $category_url ] ?? null, 'Category page as CollectionPage' );
+		$this->assertSame( 'ProfilePage',    $types_by_url[ $author_url ] ?? null, 'Author archive as ProfilePage' );
+		$this->assertSame( 'WebPage',       $types_by_url[ $date_archive_url ] ?? null, 'Date archive as WebPage, until better support' );
+		$this->assertSame( 'CollectionPage', $types_by_url[ $home_url ] ?? null, 'Homepage as CollectionPage' );
+	}
 
 	// -------------------------------------------------------------------------
 	// Helpers
