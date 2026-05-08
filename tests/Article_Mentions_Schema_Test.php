@@ -232,7 +232,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 
 		$this->assertSame( 'CollectionPage', $types_by_url[ $category_url ] ?? null, 'Category page as CollectionPage' );
 		$this->assertSame( 'ProfilePage',    $types_by_url[ $author_url ] ?? null, 'Author archive as ProfilePage' );
-		$this->assertSame( 'CollectionPage', $types_by_url[ $date_archive_url ] ?? null, 'Date archive as CollectionPage' );
+		$this->assertSame( 'WebPage',       $types_by_url[ $date_archive_url ] ?? null, 'Date archive as WebPage, until better support' );
 		$this->assertSame( 'WebPage',        $types_by_url[ $home_url ] ?? null, 'Homepage as WebPage' );
 	}
 
