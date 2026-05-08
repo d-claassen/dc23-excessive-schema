@@ -172,8 +172,9 @@ foreach ( $links as $link ) {
 			return 'WebPage';
 		}
 
+		// Date archive should also be CollectionPage, but have no individual indexables.
 		return match ( $target->object_type ) {
-			'term', 'post-type-archive', 'date-archive' => 'CollectionPage',
+			'term', 'post-type-archive' => 'CollectionPage',
 			'user'  => 'ProfilePage',
 			default => 'WebPage',
 		};
