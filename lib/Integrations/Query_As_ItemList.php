@@ -15,7 +15,7 @@ final class Query_As_ItemList {
 	public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
 		$post_ids = $this->resolve_post_ids( $query_loop_block['attrs']['query'] ?? [] );
 
-		// No content in this block.
+    // No content in this block.
 		if ( empty( $post_ids ) ) {
 			return $graph;
 		}
@@ -24,7 +24,7 @@ final class Query_As_ItemList {
 		$list_id   = $context->canonical . '#/schema/itemlist/' . $query_id;
 		$list_name = $this->resolve_name( $query_loop_block );
 
-		$items = [];
+    $items = [];
 		foreach ( $post_ids as $i => $post_id ) {
 			$position = $i + 1;
 			$items[] = [
