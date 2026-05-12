@@ -35,7 +35,7 @@ final class Query_As_ItemList {
 			];
 		}
 
-		array_push(
+        array_push(
 			$graph,
 			[
 				'@id'             => $list_id,
@@ -45,7 +45,7 @@ final class Query_As_ItemList {
 			],
 		);
 
-		return $graph;
+        return $graph;
 	}
 
 	/**
@@ -53,7 +53,7 @@ final class Query_As_ItemList {
 	 *
 	 * @param array $blocks The blocks of this type on the current page.
 	 */
-	public function prepare_itemlist_references( $blocks ) {
+    public function prepare_itemlist_references( $blocks ) {
 		// Run late so we see mentions already added by other integrations
 		// (notably SEO_Links_As_Mentions at priority 10) and can prune any
 		// of those that duplicate @ids inside our ItemLists.
