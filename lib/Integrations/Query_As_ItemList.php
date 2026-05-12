@@ -8,9 +8,9 @@ use function DC23\ExcessiveSchema\dc23_schema_get_main_entity;
 
 final class Query_As_ItemList {
 
-	public function register(): void {
-		add_action( 'wpseo_pre_schema_block_type_core/query', [ $this, 'prepare_itemlist_references' ], 10, 1 );
-	}
+    public function register(): void {
+        add_action( 'wpseo_pre_schema_block_type_core/query', [ $this, 'prepare_itemlist_references' ], 10, 1 );
+    }
 
 	public function render_itemlist_schema( $graph, $query_loop_block, $context ) {
 		$post_ids = $this->resolve_post_ids( $query_loop_block['attrs']['query'] ?? [] );
