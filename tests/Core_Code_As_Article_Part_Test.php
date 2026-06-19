@@ -29,7 +29,7 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 	public function test_part_added_for_code_block(): void {
 		$post_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
-			'post_content' => <<<GB_HTML
+			'post_content' => <<<'GB_HTML'
 				<!-- wp:code -->
 					<pre class="wp-block-code"><code>&lt;?php
 
