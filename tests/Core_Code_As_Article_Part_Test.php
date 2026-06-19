@@ -25,4 +25,33 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 	public function expectDeprecated(): void {
 		// noop.
 	}
+	
+	public function test_part_added_for_code_block(): void {
+		$post_id = self::factory()->post->create( [
+			'post_status'  => 'publish',
+			'post_content' => <<<GB_HTML
+				<!-- wp:code -->
+					<pre class="wp-block-code"><code>&lt;?php
+
+					function greet( string $name ): string {
+					return "Hello {$name}";
+				}
+				
+				echo greet( 'Dennis' );</code></pre>
+				<!-- /wp:code -->
+			GB_HTML,
+		] );
+		
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $post_id, [] );
+
+		$this->go_to( \get_permalink( $post_id ) );
+
+		$article = $this->get_article_schema( $source_id );
+
+		$this->assertArrayHasKey( 'mentions', $article );
+		$this->assertSame( $target_url, $article['mentions'][0]['url'] );
+		$this->assertSame( $target_url . '#article', $article['mentions'][0]['@id'] );
+	}
+
 }
