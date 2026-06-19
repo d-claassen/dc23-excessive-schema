@@ -54,4 +54,35 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 		$this->assertNotEmpty( $article['hasPart'][0]['text'] );
 	}
 
+	// -------------------------------------------------------------------------
+	// Helpers
+	// -------------------------------------------------------------------------
+
+	private function get_schema( int $post_id, bool $debug = false ): array {
+		$this->go_to( get_permalink( $post_id ) );
+
+		ob_start();
+		do_action( 'wpseo_head' );
+		$output = ob_get_clean();
+
+		preg_match( '/<script type="application\/ld\+json"[^>]*>(.*?)<\/script>/s', $output, $matches );
+
+		if ( $debug ) {
+			var_dump( $matches[0] ?? 'no matches' );
+		}
+
+		return json_decode( $matches[1] ?? '{}', true );
+	}
+
+	private function get_article_schema( int $post_id, bool $debug = false ): ?array {
+		$schema = $this->get_schema( $post_id, $debug );
+
+		foreach ( $schema['@graph'] ?? [] as $piece ) {
+			if ( isset( $piece['@type'] ) && $piece['@type'] === 'Article' ) {
+				return $piece;
+			}
+		}
+
+		return null;
+	}
 }
