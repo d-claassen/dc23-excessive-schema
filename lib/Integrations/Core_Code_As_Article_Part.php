@@ -29,7 +29,7 @@ final class Core_Code_As_Article_Part {
      *
      * @param array $blocks The blocks of this type on the current page.
      */
-    public function prepare_itemlist_references( $blocks ) {
+    public function prepare_sourcecode_references( $blocks ) {
         add_filter( 'wpseo_schema_webpage', function( $webpage_data, $context ) use ( $blocks ) {
             $references = [];
             foreach ( $blocks as $code_block ) {
