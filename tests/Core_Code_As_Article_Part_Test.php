@@ -47,11 +47,29 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 
 		$this->go_to( \get_permalink( $post_id ) );
 
-		$article = $this->get_article_schema( $post_id );
+		$schema = $this->get_schema( $post_id );
 
+		$article = null;
+		foreach ( $schema['@graph'] ?? [] as $piece ) {
+			if ( isset( $piece['@type'] ) && $piece['@type'] === 'Article' ) {
+				$article = $piece;
+				break;
+			}
+		}
+		
 		$this->assertArrayHasKey( 'hasPart', $article );
-		$this->assertSame( 'SoftwareSourceCode', $article['hasPart'][0]['@type'] );
-		$this->assertNotEmpty( $article['hasPart'][0]['text'] );
+		$this->assertNotEmpty( $article['hasPart'][0]['@id'] );
+		
+		$code = null;
+		foreach ( $schema['@graph'] ?? [] as $piece ) {
+			if ( isset( $piece['@type'] ) && $piece['@id'] === $article['hasPart'][0]['@id'] ) {
+				$code = $piece;
+				break;
+			}
+		}
+		
+		$this->assertSame( 'SoftwareSourceCode', $code['@type'] );
+		$this->assertNotEmpty( $code['text'] );
 	}
 
 	// -------------------------------------------------------------------------
