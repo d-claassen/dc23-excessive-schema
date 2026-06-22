@@ -17,13 +17,25 @@ final class Core_Code_As_Article_Part {
                 // @TODO. create identifier.
                 '@id' => $context->canonical . '#/schema/sourcecode/' . '',
                 '@type' => 'SoftwareSourceCode',
-                'text' => $code_block,
+                'text' => $this->unwrap_core_code_block( $code_block['innerHTML'] ),
             ],
         );
 
         return $graph;
     }
+
+    private function unwrap_core_code_block( string $html ): string {
+    	if ( ! preg_match( '/<code\b[^>]*>(.*?)<\/code>/s', $html, $matches ) ) {
+    		return '';
+    	}
     
+    	return html_entity_decode(
+    		$matches[1],
+    		ENT_QUOTES | ENT_HTML5,
+    		'UTF-8'
+    	);
+    }
+
     /**
      * If this fires, we know there's a Code block on the page, so reference it from the webpage piece.
      *
