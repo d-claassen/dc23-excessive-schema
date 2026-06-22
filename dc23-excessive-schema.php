@@ -46,6 +46,7 @@ function init(): void {
 	( new \DC23\ExcessiveSchema\Integrations\Main_Entity_Registration() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\Article_As_Main_Entity() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\Blog() )->register();
+	( new \DC23\ExcessiveSchema\Integrations\Core_Code_As_Article_Part() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\SEO_Links_As_Mentions() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\Query_As_ItemList() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\ReadingTime() )->register();
