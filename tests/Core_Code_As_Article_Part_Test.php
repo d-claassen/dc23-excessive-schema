@@ -74,7 +74,8 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 		}
 		
 		$this->assertSame( 'SoftwareSourceCode', $code['@type'] );
-		$this->assertSame( $code_snippet, $code['text'] );
+		$expected = html_entity_decode( $code_snippet, ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+		$this->assertSame( $expected, $code['text'] );
 	}
 
 	// -------------------------------------------------------------------------
