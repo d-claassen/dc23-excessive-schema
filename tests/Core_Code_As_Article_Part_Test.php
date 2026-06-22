@@ -44,6 +44,7 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 				<!-- /wp:code -->
 				GB_HTML,
 				$code_snippet,
+			),
 		] );
 		
 		// Update object to persist meta value to indexable.
