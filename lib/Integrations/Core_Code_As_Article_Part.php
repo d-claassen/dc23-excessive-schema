@@ -17,14 +17,14 @@ final class Core_Code_As_Article_Part {
                 // @TODO. create identifier.
                 '@id' => $context->canonical . '#/schema/sourcecode/' . '',
                 '@type' => 'SoftwareSourceCode',
-                'text' => $code_block['innerHTML'],
+                'text' => $this->unwrap_core_code_block( $code_block['innerHTML'] ),
             ],
         );
 
         return $graph;
     }
 
-    private function extract_code_from_core_code_block( string $html ): string {
+    private function unwrap_core_code_block( string $html ): string {
     	if ( ! preg_match( '/<code\b[^>]*>(.*?)<\/code>/s', $html, $matches ) ) {
     		return '';
     	}
