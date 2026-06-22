@@ -27,19 +27,23 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 	}
 	
 	public function test_part_added_for_code_block(): void {
-		$post_id = self::factory()->post->create( [
-			'post_status'  => 'publish',
-			'post_content' => <<<'GB_HTML'
-				<!-- wp:code -->
-					<pre class="wp-block-code"><code>&lt;?php
-
-					function greet( string $name ): string {
+		$code_snippet = <<<'CODE'
+		&lt;?php
+				function greet( string $name ): string {
 					return "Hello {$name}";
 				}
 				
-				echo greet( 'Dennis' );</code></pre>
+				echo greet( 'Reader' );
+		CODE;
+		$post_id = self::factory()->post->create( [
+			'post_status'  => 'publish',
+			'post_content' => sprintf(
+				<<<'GB_HTML'
+				<!-- wp:code -->
+					<pre class="wp-block-code"><code>%s</code></pre>
 				<!-- /wp:code -->
-			GB_HTML,
+				GB_HTML,
+				$code_snippet,
 		] );
 		
 		// Update object to persist meta value to indexable.
@@ -69,7 +73,7 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 		}
 		
 		$this->assertSame( 'SoftwareSourceCode', $code['@type'] );
-		$this->assertNotEmpty( $code['text'] );
+		$this->assertSame( $code_snippet, $code['text'] );
 	}
 
 	// -------------------------------------------------------------------------
