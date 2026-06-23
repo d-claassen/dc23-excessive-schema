@@ -14,8 +14,7 @@ final class Core_Code_As_Article_Part {
         array_push(
             $graph,
             [
-                // @TODO. create identifier.
-                '@id' => $context->canonical . '#/schema/sourcecode/' . '',
+                '@id' => $context->canonical . '#/schema/sourcecode/' . md5( $code_block['innerHTML'] ),
                 '@type' => 'SoftwareSourceCode',
                 'text' => $this->unwrap_core_code_block( $code_block['innerHTML'] ),
             ],
@@ -46,7 +45,7 @@ final class Core_Code_As_Article_Part {
             $references = [];
             foreach ( $blocks as $code_block ) {
                 $references[] = [
-                    '@id' => $context->canonical . '#/schema/sourcecode/',
+                    '@id' => $context->canonical . '#/schema/sourcecode/' . block( $code_block['innerHTML'] ),
                 ];
             }
 
