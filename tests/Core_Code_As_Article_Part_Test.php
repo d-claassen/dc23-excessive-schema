@@ -78,6 +78,61 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 		$this->assertSame( $expected, $code['text'] );
 	}
 
+	public function test_multiple_code_blocks(): void {
+		$code_snippet = <<<'GB_HTML'
+				<!-- wp:code -->
+					<pre class="wp-block-code"><code>
+				&lt;?php
+				function greet( string $name ): string {
+					return "Hello {$name}";
+				}
+				
+				echo greet( 'Reader' );</code></pre>
+				<!-- /wp:code -->
+				GB_HTML,
+		$post_id = self::factory()->post->create( [
+			'post_status'  => 'publish',
+			'post_content' => sprintf(
+				<<<'GB_HTML'
+				%1$s
+				<!-- wp:paragraph -->
+					<p>Hi</>
+				<!-- /wp:paragraph -->
+				%1$s
+				GB_HTML,
+				$code_snippet,
+			),
+		] );
+		
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $post_id, [] );
+
+		$this->go_to( \get_permalink( $post_id ) );
+
+		$schema = $this->get_schema( $post_id );
+
+		$article = null;
+		foreach ( $schema['@graph'] ?? [] as $piece ) {
+			if ( isset( $piece['@type'] ) && $piece['@type'] === 'Article' ) {
+				$article = $piece;
+				break;
+			}
+		}
+		
+		$this->assertArrayHasKey( 'hasPart', $article );
+		$this->assertCount( 2, $article['hasPart'] );
+		
+		$codes = [];
+		foreach ( $schema['@graph'] ?? [] as $piece ) {
+			if ( isset( $piece['@type'] ) && $piece['@type'] === 'SoftwareSourceCode' ) {
+				$codes[] = $piece;
+			}
+		}
+		
+		$this->assertCount( 2, $codes );
+	}
+
+
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
