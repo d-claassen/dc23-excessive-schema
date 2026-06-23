@@ -82,14 +82,14 @@ final class Core_Code_As_Article_Part_Test extends \WP_UnitTestCase {
 		$code_snippet = <<<'GB_HTML'
 				<!-- wp:code -->
 					<pre class="wp-block-code"><code>
-				&lt;?php
-				function greet( string $name ): string {
-					return "Hello {$name}";
-				}
-				
-				echo greet( 'Reader' );</code></pre>
+						&lt;?php
+						function greet( string $name ): string {
+							return "Hello {$name}";
+						}
+						
+						echo greet( 'Reader' );</code></pre>
 				<!-- /wp:code -->
-				GB_HTML,
+				GB_HTML;
 		$post_id = self::factory()->post->create( [
 			'post_status'  => 'publish',
 			'post_content' => sprintf(
