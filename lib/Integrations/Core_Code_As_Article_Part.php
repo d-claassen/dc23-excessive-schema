@@ -45,7 +45,7 @@ final class Core_Code_As_Article_Part {
             $references = [];
             foreach ( $blocks as $code_block ) {
                 $references[] = [
-                    '@id' => $context->canonical . '#/schema/sourcecode/' . block( $code_block['innerHTML'] ),
+                    '@id' => $context->canonical . '#/schema/sourcecode/' . md5( $code_block['innerHTML'] ),
                 ];
             }
 
