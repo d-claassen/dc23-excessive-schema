@@ -11,7 +11,7 @@ namespace DC23\ExcessiveSchema\Tests;
 
 use WP_UnitTestCase;
 
-final class Article_Image_Test extends WP_UnitTestCase {
+final class Article_Images_Test extends WP_UnitTestCase {
 
 	public function set_up(): void {
 		parent::set_up();
