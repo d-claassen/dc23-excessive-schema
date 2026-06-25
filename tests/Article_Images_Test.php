@@ -59,14 +59,17 @@ final class Article_Images_Test extends WP_UnitTestCase {
                 <!-- /wp:image -->
                 HTML,
     			$image_1,
-    			wp_get_attachment_url( $image_1 ),
+    			$image_1_url = wp_get_attachment_url( $image_1 ),
     			$image_2,
-    			wp_get_attachment_url( $image_2 )
+    			$image_2_url = wp_get_attachment_url( $image_2 )
     		),
     	] );
         
         $article = $this->get_article_schema( $post_id );
-        $this->assertCount( 2, $article['image'] );
+        $this->assertSame( [
+									['@id' => $image_1_url],
+									['@id' => $image_2_url],
+								], $article['image'] );
     }
 
 	// -------------------------------------------------------------------------
