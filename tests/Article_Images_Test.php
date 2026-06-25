@@ -66,6 +66,8 @@ final class Article_Images_Test extends WP_UnitTestCase {
     	] );
         
         $article = $this->get_article_schema( $post_id );
+								
+								$this->assertSame( $image_1, \get_post_thumbnail_id( $post_id ) );
         $this->assertSame( [
 									['@id' => $image_1_url],
 									['@id' => $image_2_url],
