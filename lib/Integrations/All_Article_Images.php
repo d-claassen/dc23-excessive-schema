@@ -21,7 +21,7 @@ class All_Article_Images {
         
         $images = array_filter(
 			$this->get_links_repo()->find_all_by_indexable_id( $context->indexable->id ),
-			fn( $link ) => $link->type === SEO_Links::TYPE_INTERNAL
+			fn( $link ) => $link->type === SEO_Links::TYPE_INTERNAL_IMAGE || $link->type === SEO_Links::TYPE_EXTERNAL_IMAGE
 		);
 
 		if ( empty( $images ) ) {
