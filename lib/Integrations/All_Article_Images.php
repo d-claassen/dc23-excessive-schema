@@ -1,5 +1,7 @@
 <?php declare( strict_types=1 );
 
+namespace DC23\ExcessiveSchema\Integrations;
+
 class All_Article_Images {
 
     public function register(): void {
