@@ -42,7 +42,10 @@ class All_Article_Images {
             $article['image'] = [ $article['image'] ];
         }
         
-        $article['image'] ??= array_merge( $article['image'], $images );
+        // $article['image'] ??= array_merge( $article['image'], $images );
+        
+        $article['image']['links'] = $links;
+        $article['image']['imsges'] = $images;
         
         return $article;
     }
