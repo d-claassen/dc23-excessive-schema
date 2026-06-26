@@ -44,6 +44,7 @@ function init(): void {
 	}
 	
 	( new \DC23\ExcessiveSchema\Integrations\Main_Entity_Registration() )->register();
+	( new \DC23\ExcessiveSchema\Integrations\All_Article_Images() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\Article_As_Main_Entity() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\Blog() )->register();
 	( new \DC23\ExcessiveSchema\Integrations\Core_Code_As_Article_Part() )->register();
