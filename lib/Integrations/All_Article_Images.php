@@ -2,6 +2,14 @@
 
 namespace DC23\ExcessiveSchema\Integrations;
 
+use Yoast\WP\SEO\Context\Meta_Tags_Context;
+use Yoast\WP\SEO\Models\Indexable;
+use Yoast\WP\SEO\Models\SEO_Links;
+use Yoast\WP\SEO\Repositories\Indexable_Repository;
+use Yoast\WP\SEO\Repositories\SEO_Links_Repository;
+
+use function YoastSEO;
+
 class All_Article_Images {
 
     private SEO_Links_Repository $links_repo;
