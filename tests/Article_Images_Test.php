@@ -64,8 +64,11 @@ final class Article_Images_Test extends WP_UnitTestCase {
     			$image_2_url = wp_get_attachment_url( $image_2 )
     		),
     	] );
-        
-        $article = $this->get_article_schema( $post_id );
+		
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $post_id, [] );
+					
+		$article = $this->get_article_schema( $post_id );
 								
 								$this->assertSame( $image_1, \get_post_thumbnail_id( $post_id ) );
         $this->assertSame( [
