@@ -19,6 +19,15 @@ class All_Article_Images {
 			return $data;
 		}
         
+        $images = array_filter(
+			$this->get_links_repo()->find_all_by_indexable_id( $context->indexable->id ),
+			fn( $link ) => $link->type === SEO_Links::TYPE_INTERNAL
+		);
+
+		if ( empty( $images ) ) {
+			return $data;
+		}
+        
         if ( ! empty( $article['image'] ) && ! array_is_list( $article['image'] ) ) {
             // Wrap one associative array within a new array list.
             $article['image'] = [ $article['image'] ];
