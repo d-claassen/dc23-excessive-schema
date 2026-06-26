@@ -9,7 +9,7 @@ class All_Article_Images {
     }
     
     public function add_all_images( $article, $context ) {
-        if ( ! empty( $article['image'] ) && ! is_array_list( $article['image'] ) ) {
+        if ( ! empty( $article['image'] ) && ! array_is_list( $article['image'] ) ) {
             // Wrap one associative array within a new array list.
             $article['image'] = [ $article['image'] ];
         }
