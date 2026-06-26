@@ -26,4 +26,11 @@ class All_Article_Images {
         
         return $article;
     }
+
+    private function get_links_repo(): SEO_Links_Repository {
+		if ( ! isset( $this->links_repo ) ) {
+			$this->links_repo = YoastSEO()->classes->get( SEO_Links_Repository::class );
+		}
+		return $this->links_repo;
+	}
 }
