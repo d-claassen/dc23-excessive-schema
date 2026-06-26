@@ -15,6 +15,8 @@ final class Article_Images_Test extends WP_UnitTestCase {
 
 	public function set_up(): void {
 		parent::set_up();
+		
+		$this->set_up_internal_linking();
 
 		// Create test user for publisher. Needed for Article ouput from wordpress-seo below 26.7.
 		$this->user_id = self::factory()->user->create( [
@@ -26,6 +28,29 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		// Set Yoast user settings to use person schema
 		\YoastSEO()->helpers->options->set( 'company_or_person', 'person' );
 		\YoastSEO()->helpers->options->set( 'company_or_person_user_id', $this->user_id );
+	}
+	
+	private function set_up_internal_linking(): void {
+		// Enable pretty urls. Yoasts internal linking system removes query args for "canonicalizing" indexables.
+		// That doesnt work well when the post id is specifically passed via them.
+		$this->set_permalink_structure( '/%postname%/' );
+		
+		// Enable indexables to allow internal links between then being set.
+		add_filter( 'wpseo_should_save_indexable', '__return_true' );
+		
+		// Workaround for Yoast bug where relative urls arent resolved for home_url values
+		// with a port in it due to poor absolute url construction.
+		add_filter( 'home_url', static function ( $url ) {
+    $parts = wp_parse_url( $url );
+    if ( ! isset( $parts['port'] ) ) {
+        return $url;
+    }
+    $rebuilt = $parts['scheme'] . '://' . $parts['host'];
+    if ( isset( $parts['path'] ) ) {
+        $rebuilt .= $parts['path'];
+    }
+    return $rebuilt;
+		} );
 	}
 
 	/**
