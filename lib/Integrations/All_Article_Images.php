@@ -9,6 +9,14 @@ class All_Article_Images {
     }
     
     public function add_all_images( $article, $context ) {
+        if ( ! ( $context instanceof Meta_Tags_Context ) ) {
+			return $data;
+		}
+
+		if ( ! $context->indexable ) {
+			return $data;
+		}
+        
         if ( ! empty( $article['image'] ) && ! array_is_list( $article['image'] ) ) {
             // Wrap one associative array within a new array list.
             $article['image'] = [ $article['image'] ];
