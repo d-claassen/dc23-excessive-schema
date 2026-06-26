@@ -12,11 +12,11 @@ class All_Article_Images {
     
     public function add_all_images( $article, $context ) {
         if ( ! ( $context instanceof Meta_Tags_Context ) ) {
-			return $data;
+			return $article;
 		}
 
 		if ( ! $context->indexable ) {
-			return $data;
+			return $article;
 		}
         
         $images = array_filter(
@@ -25,7 +25,7 @@ class All_Article_Images {
 		);
 
 		if ( empty( $images ) ) {
-			return $data;
+			return $article;
 		}
         
         if ( ! empty( $article['image'] ) && ! array_is_list( $article['image'] ) ) {
