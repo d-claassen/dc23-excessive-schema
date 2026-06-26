@@ -4,6 +4,8 @@ namespace DC23\ExcessiveSchema\Integrations;
 
 class All_Article_Images {
 
+    private SEO_Links_Repository $links_repo;
+
     public function register(): void {
         add_filter( 'wpseo_schema_article', [ $this, 'add_all_images' ], 10, 2 );
     }
