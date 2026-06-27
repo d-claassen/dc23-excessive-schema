@@ -48,6 +48,8 @@ class All_Article_Images {
 
             $article['image'][] = [
                 '@id' => $image->url,
+                '_img' => $image->target_post_id,
+                '_main' => $context->main_image_id,
             ];
         }
 
