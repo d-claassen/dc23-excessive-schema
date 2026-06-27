@@ -50,6 +50,7 @@ class All_Article_Images {
                 '@id' => $image->url,
                 '_img' => $image->target_post_id,
                 '_main' => $context->main_image_id,
+                '_murl' => $context->main_image_url,
             ];
         }
 
