@@ -42,12 +42,12 @@ class All_Article_Images {
         }
 
         foreach ( $images as $image ) {
-            if ( $image['post_id'] === $context->main_imsge_id ) {
+            if ( $image->target_post_id === $context->main_image_id ) {
                 continue;
             }
 
             $article['image'][] = [
-                '@id' => $image['url'],
+                '@id' => $image->url,
             ];
         }
 
