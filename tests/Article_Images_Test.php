@@ -94,12 +94,12 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		self::factory()->post->update_object( $post_id, [] );
 					
 		$article = $this->get_article_schema( $post_id );
-
-        $this->assertSame( [
-									['@id' => $image_1_url],
-									['@id' => $image_2_url],
-								], $article['image'] );
-    }
+		
+		$this->assertSame( [
+			['@id' => \get_permalink( $post_id ) . '#primaryimage' ],
+			['@id' => $image_2_url],
+		], $article['image'] );
+	}
 
 	// -------------------------------------------------------------------------
 	// Helpers
