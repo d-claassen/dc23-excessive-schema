@@ -42,15 +42,13 @@ class All_Article_Images {
         }
 
         foreach ( $images as $image ) {
-            if ( $image->target_post_id === $context->main_image_id ) {
+            // @TODO. Consider cases where $image->post_target_id needs comparing with $context->main_image_id
+            if ( $image->url === $context->main_image_url ) {
                 continue;
             }
 
             $article['image'][] = [
                 '@id' => $image->url,
-                '_img' => $image->target_post_id,
-                '_main' => $context->main_image_id,
-                '_murl' => $context->main_image_url,
             ];
         }
 
