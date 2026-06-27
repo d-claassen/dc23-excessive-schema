@@ -93,12 +93,17 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $post_id, [] );
 					
-		$article = $this->get_article_schema( $post_id );
+		$schema  = $this->get_schema( $post_id )
+		$article = $this->get_article_schema( $schema );
 		
 		$this->assertSame( [
 			['@id' => \get_permalink( $post_id ) . '#primaryimage' ],
 			['@id' => $image_2_url],
 		], $article['image'] );
+		
+		$keyed_graph = array_column( $schema['graph'], null, '@id' );
+		
+		$this->assertKeyExists( $image_2_url, $keyed_graph );
 	}
 
 	// -------------------------------------------------------------------------
@@ -121,9 +126,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		return json_decode( $matches[1] ?? '{}', true );
 	}
 
-	private function get_article_schema( int $post_id, bool $debug = false ): ?array {
-		$schema = $this->get_schema( $post_id, $debug );
-
+	private function get_article_schema( $schema ): ?array {
 		foreach ( $schema['@graph'] ?? [] as $piece ) {
 			if ( isset( $piece['@type'] ) && $piece['@type'] === 'Article' ) {
 				return $piece;
