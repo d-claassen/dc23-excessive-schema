@@ -26,10 +26,9 @@ class All_Article_Images {
 		if ( ! $context->indexable ) {
 			return $article;
 		}
-        
-        $links = $this->get_links_repo()->find_all_by_indexable_id( $context->indexable->id );
+
         $images = array_filter(
-            $links,
+            $this->get_links_repo()->find_all_by_indexable_id( $context->indexable->id ),
 			fn( $link ) => in_array( $link->type, [ SEO_Links::TYPE_INTERNAL_IMAGE, SEO_Links::TYPE_EXTERNAL_IMAGE ], true ),
 		);
 
@@ -41,12 +40,17 @@ class All_Article_Images {
             // Wrap one associative array within a new array list.
             $article['image'] = [ $article['image'] ];
         }
-        
-        // $article['image'] ??= array_merge( $article['image'], $images );
-        
-        $article['image']['links'] = $links;
-        $article['image']['imsges'] = $images;
-        
+
+        foreach ( $images as $image ) {
+            if ( $image['post_id'] === $context->main_imsge_id ) {
+                continue;
+            }
+
+            $article['image'][] = [
+                '@id' => $image['url'],
+            ];
+        }
+
         return $article;
     }
 
