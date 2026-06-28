@@ -93,7 +93,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $post_id, [] );
 					
-		$schema  = $this->get_schema( $post_id )
+		$schema  = $this->get_schema( $post_id );
 		$article = $this->get_article_schema( $schema );
 		
 		$this->assertSame( [
