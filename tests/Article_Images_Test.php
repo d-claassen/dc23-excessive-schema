@@ -101,7 +101,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 			['@id' => $image_2_url],
 		], $article['image'] );
 		
-		$keyed_graph = array_column( $schema['graph'], null, '@id' );
+		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
 		
 		$this->assertKeyExists( $image_2_url, $keyed_graph );
 	}
