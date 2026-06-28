@@ -96,13 +96,17 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$schema  = $this->get_schema( $post_id );
 		$article = $this->get_article_schema( $schema );
 		
+		$primary_image \get_permalink( $post_id ) . '#primaryimage';
+		
 		$this->assertSame( [
-			['@id' => \get_permalink( $post_id ) . '#primaryimage' ],
+			['@id' => $primary_image ],
 			['@id' => $image_2_url],
 		], $article['image'] );
 		
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
 		
+		$this->assertArrayHasKey( $primary_image, $keyed_graph );
+		$this->assertArrayNotHasKey( $image_1_url, $keyed_graph );
 		$this->assertArrayHasKey( $image_2_url, $keyed_graph );
 	}
 
