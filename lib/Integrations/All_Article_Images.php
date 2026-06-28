@@ -15,9 +15,16 @@ class All_Article_Images {
     private SEO_Links_Repository $links_repo;
 
     public function register(): void {
+        add_filter( 'wpseo_schema_graph_pieces', [ $this, 'add_image_piece_generator' ] );
         add_filter( 'wpseo_schema_article', [ $this, 'add_all_images' ], 10, 2 );
     }
     
+    public function add_image_piece_generator( $pieces ) {
+        $pieces[] = new Linked_Image();
+        
+        return $pieces;
+    }
+
     public function add_all_images( $article, $context ) {
         if ( ! ( $context instanceof Meta_Tags_Context ) ) {
 			return $article;
