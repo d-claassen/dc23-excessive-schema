@@ -96,7 +96,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$schema  = $this->get_schema( $post_id );
 		$article = $this->get_article_schema( $schema );
 		
-		$primary_image \get_permalink( $post_id ) . '#primaryimage';
+		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
 		
 		$this->assertSame( [
 			['@id' => $primary_image ],
