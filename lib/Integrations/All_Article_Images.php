@@ -2,6 +2,7 @@
 
 namespace DC23\ExcessiveSchema\Integrations;
 
+use DC23\ExcessiveSchema\Generators\Linked_Image;
 use Yoast\WP\SEO\Context\Meta_Tags_Context;
 use Yoast\WP\SEO\Models\Indexable;
 use Yoast\WP\SEO\Models\SEO_Links;
