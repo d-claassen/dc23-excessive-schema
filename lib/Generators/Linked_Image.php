@@ -2,7 +2,7 @@
 
 namespace DC23\ExcessiveSchema\Generators;
 
-use Yoast\WP\SEO\Generators\Abstract_Schema_Piece;
+use \Yoast\WP\SEO\Generators\Schema\Abstract_Schema_Piece;
 
 class Linked_Image extends Abstract_Schema_Piece {
 
