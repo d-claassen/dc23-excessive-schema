@@ -108,7 +108,11 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$this->assertArrayHasKey( $primary_image, $keyed_graph );
 		$this->assertArrayNotHasKey( $image_1_url, $keyed_graph );
 		$this->assertSame( $image_1_url, $keyed_graph[$primary_image]['url'], '1st image in graph as primary' );
+
 		$this->assertArrayHasKey( $image_2_url, $keyed_graph );
+		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['@id'], '@id is url' );
+		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['contentUrl'], 'contentUrl is url' );
+		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['url'], 'url is url (compatibility support)' );
 	}
 
 	// -------------------------------------------------------------------------
