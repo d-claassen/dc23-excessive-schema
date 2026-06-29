@@ -45,6 +45,3 @@ class Linked_Image extends Abstract_Schema_Piece {
 		return $this->links_repo;
 	}
 }
-    
-    
-}
