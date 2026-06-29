@@ -21,7 +21,7 @@ class Linked_Image extends Abstract_Schema_Piece {
 		);
 
 		if ( empty( $images ) ) {
-        return $image_pieces;
+            return $image_pieces;
 		}
 
         foreach ( $images as $image ) {
@@ -32,6 +32,8 @@ class Linked_Image extends Abstract_Schema_Piece {
 
             $image_pieces[] = [
                 '@id' => $image->url,
+                'contentUrl' => $image->url,
+                'url' => $image->url,
             ];
         }
 
