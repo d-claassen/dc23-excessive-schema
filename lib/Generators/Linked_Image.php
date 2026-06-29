@@ -3,6 +3,8 @@
 namespace DC23\ExcessiveSchema\Generators;
 
 use \Yoast\WP\SEO\Generators\Schema\Abstract_Schema_Piece;
+use Yoast\WP\SEO\Models\SEO_Links;
+use Yoast\WP\SEO\Repositories\SEO_Links_Repository;
 
 class Linked_Image extends Abstract_Schema_Piece {
 
