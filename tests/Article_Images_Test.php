@@ -82,11 +82,16 @@ final class Article_Images_Test extends WP_UnitTestCase {
                 <!-- wp:image {"id":%3$d,"sizeSlug":"large","linkDestination":"none"} -->
                 <figure class="wp-block-image size-large"><img src="%4$s" alt="" class="wp-image-%3$d"/></figure>
                 <!-- /wp:image -->
+																
+																<!-- wp:image {"sizeSlug":"full","linkDestination":"none"} -->
+																<figure class="wp-block-image size-full"><img src="%5$s" alt="" /></figure>
+																<!-- /wp:image -->
                 HTML,
     			$image_1,
     			$image_1_url = wp_get_attachment_url( $image_1 ),
     			$image_2,
-    			$image_2_url = wp_get_attachment_url( $image_2 )
+    			$image_2_url = wp_get_attachment_url( $image_2 ),
+							$image_3_url = 'https://example.com/image.jpg',
     		),
     	] );
 		
@@ -113,6 +118,8 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['@id'], '@id is url' );
 		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['contentUrl'], 'contentUrl is url' );
 		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['url'], 'url is url (compatibility support)' );
+		
+				$this->assertArrayHasKey( $image_3_url, $keyed_graph );
 	}
 
 	// -------------------------------------------------------------------------
