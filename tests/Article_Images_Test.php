@@ -104,7 +104,8 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
 		
 		$this->assertSame( [
-			['@id' => $primary_image ],
+			['@id' => $primary_image],
+			['@id' => $image_3_url],
 			['@id' => $image_2_url],
 		], $article['image'] );
 		
