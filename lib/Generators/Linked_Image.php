@@ -34,6 +34,7 @@ class Linked_Image extends Abstract_Schema_Piece {
 
             $image_pieces[] = [
                 '@id' => $image->url,
+                '@type' => 'ImageObject',
                 'contentUrl' => $image->url,
                 'url' => $image->url,
             ];
