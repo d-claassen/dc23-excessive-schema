@@ -8,6 +8,8 @@ use Yoast\WP\SEO\Repositories\SEO_Links_Repository;
 
 class Linked_Image extends Abstract_Schema_Piece {
 
+    private SEO_Links_Repository $links_repo;
+
     public function is_needed() {
         return $this->context->has_article;
     }
