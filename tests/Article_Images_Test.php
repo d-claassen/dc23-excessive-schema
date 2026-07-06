@@ -128,6 +128,46 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$this->assertSame( $image_3_url, $keyed_graph[$image_3_url]['url'], 'url is url (compatibility support)' );
 	}
 
+	public function test_schema_for_image_with_caption(): void {
+		$image_id = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/canola.jpg',
+		);
+		$image_url = wp_get_attachment_url( $image_id );
+		$image_alt = 'Image description.';
+		$image_caption = 'Image caption.';
+
+		$post_id = self::factory()->post->create( [
+			'post_content' => sprintf(
+				<<<'HTML'
+				<!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
+				<figure class="wp-block-image size-large">
+				 <img src="%2$s" alt="%3$s" class="wp-image-936"/>
+					<figcaption class="wp-element-caption">%4$s</figcaption>
+				</figure>
+				<!-- /wp:image -->
+				HTML,
+				$image_id,
+				$image_url,
+				$image_alt,
+				$image_caption,
+			),
+		] );
+			
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $post_id, [] );
+					
+		$schema  = $this->get_schema( $post_id );
+		$article = $this->get_article_schema( $schema );
+		
+		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
+		
+		$this->assertSame( [
+			['@id' => $primary_image],
+			['@id' => $image_url],
+		], $article['image'] );
+		
+	}
+
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
