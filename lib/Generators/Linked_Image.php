@@ -32,13 +32,17 @@ class Linked_Image extends Abstract_Schema_Piece {
                 continue;
             }
 
+            $imageData = $this->helpers->schema->image->generate_from_attachment_id(
+                $image->url,
+                $image->post_target_id,
+            );
 
             $image_pieces[] = [
                 '@id' => $image->url,
                 '@type' => 'ImageObject',
                 'contentUrl' => $image->url,
                 'url' => $image->url,
-                'caption' => $this->helpers->schema->image->generate_from_attachment_id( $image->post_target_id )
+                'caption' => $imageData,
             ];
         }
 
