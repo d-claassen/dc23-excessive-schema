@@ -64,7 +64,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
         	DIR_TESTDATA . '/images/canola.jpg'
         );
 								wp_update_post( [
-									'ID' => $image_1_id,
+									'ID' => $image_1,
 									'post_excerpt' => 'Pretty canola',
 								] );
         
@@ -72,7 +72,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
         	DIR_TESTDATA . '/images/waffles.jpg'
         );
         wp_update_post( [
-									'ID' => $image_2_id,
+									'ID' => $image_2,
 									'post_excerpt' => 'Pretty waffles',
 								] );
         
@@ -141,7 +141,12 @@ final class Article_Images_Test extends WP_UnitTestCase {
 	public function test_schema_for_image_with_caption(): void {
 		$image_id = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/canola.jpg',
-		);
+		);								
+		wp_update_post( [
+			'ID' => $image_id,
+			'post_excerpt' => 'Pretty canola',
+		] );
+
 		$image_url = wp_get_attachment_url( $image_id );
 		$image_alt = 'Image description.';
 		$image_caption = 'Image caption.';
