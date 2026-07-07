@@ -165,9 +165,15 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['@id' => $image_url],
+			//['@id' => $image_url],
 		], $article['image'] );
+
+		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
 		
+		$this->assertArrayHasKey( $primary_image, $keyed_graph );
+		$this->assertArrayNotHasKey( $image_url, $keyed_graph );
+		$this->assertSame( $image_url, $keyed_graph[$primary_image]['url'], '1st image in graph as primary' );
+		$this->assertArrayHasKey( 'caption', $keyed_graph[$primary_image] );
 	}
 
 	// -------------------------------------------------------------------------
