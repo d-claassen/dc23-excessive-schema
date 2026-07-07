@@ -42,7 +42,7 @@ class Linked_Image extends Abstract_Schema_Piece {
                 '@type' => 'ImageObject',
                 'contentUrl' => $image->url,
                 'url' => $image->url,
-                'caption' => $imageData,
+                'caption' => [$imageData,$image]
             ];
         }
 
