@@ -61,7 +61,10 @@ final class Article_Images_Test extends WP_UnitTestCase {
 
     public function test_schema_with_multiple_images(): void {
         $image_1 = self::factory()->attachment->create_upload_object(
-        	DIR_TESTDATA . '/images/canola.jpg'
+        	DIR_TESTDATA . '/images/canola.jpg',
+									[
+										'post_excerpt' => 'the caption',
+									],
         );
         
         $image_2 = self::factory()->attachment->create_upload_object(
