@@ -76,7 +76,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 									'post_excerpt' => 'Pretty waffles',
 								] );
 								
-								$this->assertSame('adddg', \wp_get_attachment_metadata( $image_2 ) );
+								$this->assertSame('adddg', \wp_get_attachment_image_url( $image_2, 'full' ) );
         
         $post_id = self::factory()->post->create( [
     		'post_content' => sprintf(
