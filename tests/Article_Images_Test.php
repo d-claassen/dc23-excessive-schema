@@ -129,14 +129,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$this->assertSame( 'ImageObject', $keyed_graph[$image_2_url]['@type'], '@type is image' );
 		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['contentUrl'], 'contentUrl is url' );
 		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['url'], 'url is url (compatibility support)' );
-		$this->assertSame(
-		 'Pretty waffles',
-		 $keyed_graph[$image_2_url]['caption'],
-			 sprintf(
-				'2nd image has caption: post %s, image %s',
-					$post_id, $image_2,
-				)
-			);
+		$this->assertSame( 'Pretty waffles', $keyed_graph[$image_2_url]['caption'],	'2nd image has caption' );
 
 		$this->assertArrayHasKey( $image_3_url, $keyed_graph );
 		$this->assertSame( $image_3_url, $keyed_graph[$image_3_url]['@id'], '@id is url' );
@@ -155,8 +148,8 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		] );
 
 		$image_url = wp_get_attachment_url( $image_id );
-		$image_alt = 'Image description.';
-		$image_caption = 'Image caption.';
+		$image_alt = 'A plate of 3 waffles';
+		$image_caption = 'Waffles are still served freshly-baked every day in the greenhouse.';
 
 		$post_id = self::factory()->post->create( [
 			'post_content' => sprintf(
@@ -195,7 +188,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$this->assertArrayHasKey( $primary_image, $keyed_graph );
 		$this->assertArrayNotHasKey( $image_url, $keyed_graph );
 		$this->assertSame( $image_url, $keyed_graph[$primary_image]['url'], '1st image in graph as primary' );
-		$this->assertArrayHasKey( 'caption', $keyed_graph[$primary_image] );
+		$this->assertSame( $image_csption, $keyed_graph[$primary_image]['caption'] );
 	}
 
 	// -------------------------------------------------------------------------
