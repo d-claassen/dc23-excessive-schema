@@ -37,6 +37,8 @@ class Linked_Image extends Abstract_Schema_Piece {
                 $image->url,
             );
             
+            $image['caption'] = $this->context->blocks;
+            
             $image_pieces[] = $image;
         }
 
