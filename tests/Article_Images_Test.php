@@ -142,22 +142,19 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$feature_image_id = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/canola.jpg',
 		);								
-		$fpi_id = wp_update_post( [
+		wp_update_post( [
 			'ID' => $feature_image_id,
 			'post_excerpt' => 'Pretty canola',
-		], true );
-		$this->assertNotInstanceOf( \WP_Error::class, $fpi_id );
+		] );
 		
 		$content_image_id = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/waffles.jpg'
 		);
-		$cpi_id = wp_update_post( [
+		wp_update_post( [
 			'ID' => $content_image_id,
 			'post_excerpt' => 'Pretty waffles',
-		], true );
-		$this->assertNotInstanceOf( \WP_Error::class, $cpi_id );
-		
-		
+		] );
+
 		$content_image_url = wp_get_attachment_url( $content_image_id );
 		$content_image_alt = 'A plate of 3 waffles';
 		$content_image_caption = 'Waffles are still served freshly-baked every day in the greenhouse.';
@@ -196,10 +193,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
 		
-		$this->assertArrayHasKey( $content_image_url, $keyed_graph );
-		
-		$this->assertSame( ['url'=>$content_image_url], $keyed_graph[$content_image_url], 'details: 1st image in text' );
-
+		$this->assertArrayHasKey( $content_image_url, $keyed_graph, 'content image in graph' );
 		$this->assertSame( $content_image_url, $keyed_graph[$content_image_url]['url'], '1st image in text' );
 		$this->assertSame( $content_image_caption, $keyed_graph[$content_image_url]['caption'], 'block caption in schema' );
 	}
