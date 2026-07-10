@@ -195,7 +195,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		
 		$this->assertArrayHasKey( $content_image_url, $keyed_graph );
 		
-		$this->assertSame( ['url'=>$content_inage_url], $keyed_graph[$content_image_url], 'details: 1st image in text' );
+		$this->assertSame( ['url'=>$content_image_url], $keyed_graph[$content_image_url], 'details: 1st image in text' );
 
 		$this->assertSame( $content_image_url, $keyed_graph[$content_image_url]['url'], '1st image in text' );
 		$this->assertSame( $content_image_caption, $keyed_graph[$content_image_url]['caption'], 'block caption in schema' );
