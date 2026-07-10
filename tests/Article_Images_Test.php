@@ -71,14 +71,14 @@ final class Article_Images_Test extends WP_UnitTestCase {
         $image_2 = self::factory()->attachment->create_upload_object(
         	DIR_TESTDATA . '/images/waffles.jpg'
         );
-        wp_update_post( [
+								wp_update_post( [
 									'ID' => $image_2,
 									'post_excerpt' => 'Pretty waffles',
 								] );
- 
-        $post_id = self::factory()->post->create( [
-    		'post_content' => sprintf(
-    			<<<'HTML'
+								
+								$post_id = self::factory()->post->create( [
+									'post_content' => sprintf(
+									<<<'HTML'
                 <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
                 <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
                 <!-- /wp:image -->
@@ -142,19 +142,22 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$feature_image_id = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/canola.jpg',
 		);								
-		wp_update_post( [
+		$fpi_id = wp_update_post( [
 			'ID' => $feature_image_id,
 			'post_excerpt' => 'Pretty canola',
-		] );
+		], true );
+		$this->assertNotInstanceOf( \WP_Error::class, $fpi_id );
 		
 		$content_image_id = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/waffles.jpg'
 		);
-		wp_update_post( [
+		$cpi_id = wp_update_post( [
 			'ID' => $content_image_id,
 			'post_excerpt' => 'Pretty waffles',
-		] );
-								
+		], true );
+		$this->assertNotInstanceOf( \WP_Error::class, $cpi_id );
+		
+		
 		$content_image_url = wp_get_attachment_url( $content_image_id );
 		$content_image_alt = 'A plate of 3 waffles';
 		$content_image_caption = 'Waffles are still served freshly-baked every day in the greenhouse.';
