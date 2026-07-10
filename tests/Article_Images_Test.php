@@ -139,17 +139,25 @@ final class Article_Images_Test extends WP_UnitTestCase {
 	}
 
 	public function test_schema_for_image_with_caption(): void {
-		$image_id = self::factory()->attachment->create_upload_object(
+		$feature_image_id = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/canola.jpg',
 		);								
 		wp_update_post( [
-			'ID' => $image_id,
+			'ID' => $feature_image_id,
 			'post_excerpt' => 'Pretty canola',
 		] );
-
-		$image_url = wp_get_attachment_url( $image_id );
-		$image_alt = 'A plate of 3 waffles';
-		$image_caption = 'Waffles are still served freshly-baked every day in the greenhouse.';
+		
+		$content_image_id = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/waffles.jpg'
+		);
+		wp_update_post( [
+			'ID' => $content_image_id,
+			'post_excerpt' => 'Pretty waffles',
+		] );
+								
+		$content_image_url = wp_get_attachment_url( $content_image_id );
+		$content_image_alt = 'A plate of 3 waffles';
+		$content_image_caption = 'Waffles are still served freshly-baked every day in the greenhouse.';
 
 		$post_id = self::factory()->post->create( [
 			'post_content' => sprintf(
@@ -161,14 +169,14 @@ final class Article_Images_Test extends WP_UnitTestCase {
 				</figure>
 				<!-- /wp:image -->
 				HTML,
-				$image_id,
-				$image_url,
-				$image_alt,
-				$image_caption,
+				$content_image_id,
+				$content_image_url,
+				$content_image_alt,
+				$content_image_caption,
 			),
 		] );
 			
-		set_post_thumbnail( $post_id, $image_id );
+		set_post_thumbnail( $post_id, $feature_image_id );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $post_id, [] );
@@ -180,15 +188,14 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		
 		$this->assertSame( [
 			['@id' => $primary_image],
-			//['@id' => $image_url],
+			['@id' => $content_image_url],
 		], $article['image'] );
 
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
 		
-		$this->assertArrayHasKey( $primary_image, $keyed_graph );
-		$this->assertArrayNotHasKey( $image_url, $keyed_graph );
-		$this->assertSame( $image_url, $keyed_graph[$primary_image]['url'], '1st image in graph as primary' );
-		$this->assertSame( $image_caption, $keyed_graph[$primary_image]['caption'] );
+		$this->assertArrayHasKey( $content_image_url, $keyed_graph );
+		$this->assertSame( $content_image_url, $keyed_graph[$content_image_url]['url'], '1st image in text' );
+		$this->assertSame( $content_image_caption, $keyed_graph[$content_image_url]['caption'], 'block caption in schema' );
 	}
 
 	// -------------------------------------------------------------------------
