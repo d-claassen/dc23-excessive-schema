@@ -167,7 +167,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 				<<<'HTML'
 				<!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
 				<figure class="wp-block-image size-large">
-				 <img src="%2$s" alt="%3$s" class="wp-image-936"/>
+				 <img src="%2$s" alt="%3$s" class="wp-image-%1$d"/>
 					<figcaption class="wp-element-caption">%4$s</figcaption>
 				</figure>
 				<!-- /wp:image -->
