@@ -60,6 +60,24 @@ class All_Article_Images {
             ];
         }
         
+        foreach ( $context->blocks['core/image'] as $block ) {
+            $processor = new WP_HTML_Tag_Processor( $block['innerHTML'] );
+
+            $block_src = null;
+            while ( $processor->next_tag() ) {
+                switch ( $processor->get_tag() ) {
+                    case 'IMG':
+                        $block_src = $processor->get_attribute( 'src' );
+                        break 2;
+                }
+            }
+            
+            if ( $block_src ) {
+                $article['image'][] = [
+                    '@id' => $context->canonical . '#/schema/ImageObject/' . md5( $block_src ),
+                ];
+            }
+        }
         $article['image'][] = $context->blocks['core/image'];
 
         return $article;
