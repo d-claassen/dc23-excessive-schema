@@ -210,7 +210,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 
 		$post_id = self::factory()->post->create( [
 			'post_content' => sprintf(
-				<<<'HTML'
+			<<<'HTML'
                 <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
                 <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
                 <!-- /wp:image -->
@@ -222,7 +222,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
                 <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
                 <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
                 <!-- /wp:image -->
-				HTML,
+																HTML,
 				$content_image_id,
 				$content_image_url,
 			),
