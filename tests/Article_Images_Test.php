@@ -3,7 +3,7 @@
  * Integration tests for the Article images.
  *
  * @package DC23\ExcessiveSchema\Tests
- */
+ */#
 
 declare( strict_types=1 );
 
@@ -196,6 +196,57 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$this->assertArrayHasKey( $content_image_url, $keyed_graph, 'content image in graph' );
 		$this->assertSame( $content_image_url, $keyed_graph[$content_image_url]['url'], '1st image in text' );
 		$this->assertSame( $content_image_caption, $keyed_graph[$content_image_url]['caption'], 'block caption in schema' );
+	}
+
+	public function test_schema_for_same_image_twice(): void {
+		$feature_image_id = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/canola.jpg',
+		);								
+
+		$content_image_id = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/waffles.jpg'
+		);
+		$content_image_url = wp_get_attachment_url( $content_image_id );
+
+		$post_id = self::factory()->post->create( [
+			'post_content' => sprintf(
+				<<<'HTML'
+                <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
+                <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
+                <!-- /wp:image -->
+                
+                <!-- wp:paragraph -->
+                <p>Some text between the images.</p>
+                <!-- /wp:paragraph -->
+                
+                <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
+                <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
+                <!-- /wp:image -->
+				HTML,
+				$content_image_id,
+				$content_image_url,
+			),
+		] );
+			
+		set_post_thumbnail( $post_id, $feature_image_id );
+
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $post_id, [] );
+					
+		$schema  = $this->get_schema( $post_id, true );
+		$article = $this->get_article_schema( $schema );
+		
+		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
+		
+		$this->assertSame( [
+			['@id' => $primary_image],
+			['@id' => $content_image_url],
+			['@id' => $content_image_url],
+		], $article['image'], 'Duplicate image mentioned twice' );
+
+		$ids = array_column( $schema['@graph'], '@id' );
+		
+		$this->assertCount( 2, $content_image_url, $ids );
 	}
 
 	// -------------------------------------------------------------------------
