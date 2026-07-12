@@ -61,7 +61,7 @@ class All_Article_Images {
         }
         
         foreach ( $context->blocks['core/image'] as $block ) {
-            $processor = new WP_HTML_Tag_Processor( $block['innerHTML'] );
+            $processor = new \WP_HTML_Tag_Processor( $block['innerHTML'] );
 
             $block_src = null;
             while ( $processor->next_tag() ) {
