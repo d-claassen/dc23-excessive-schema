@@ -59,6 +59,8 @@ class All_Article_Images {
                 '@id' => $image->url,
             ];
         }
+        
+        $article['image'][] = $context->blocks['core/image'];
 
         return $article;
     }
