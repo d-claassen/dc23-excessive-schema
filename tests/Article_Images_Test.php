@@ -222,7 +222,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
                 <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
                 <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
                 <!-- /wp:image -->
-																HTML,
+                HTML,
 				$content_image_id,
 				$content_image_url,
 			),
@@ -246,7 +246,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 
 		$ids = array_column( $schema['@graph'], '@id' );
 		
-		$this->assertCount( 2, $content_image_url, $ids );
+		$this->assertSame( 2, array_count_values($ids)[$content_image_url] );
 	}
 
 	// -------------------------------------------------------------------------
