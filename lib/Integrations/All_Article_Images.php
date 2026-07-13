@@ -55,6 +55,10 @@ class All_Article_Images {
                 $image_counts[$block_src] ??= 0;
                 ++$image_counts[$block_src];
                 
+                if ( $block_src === $context->main_image_url && $image_counts[$block_src] === 1 ) {
+                    continue;
+                }
+                
                 $image_ids[] = [
                     '@id' => $context->canonical . '#/schema/ImageObject/' . md5( $block_src ) . '-' . $image_counts[$block_src],
                    'url' => $block_src,
