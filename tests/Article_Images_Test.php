@@ -141,23 +141,23 @@ final class Article_Images_Test extends WP_UnitTestCase {
 	}
 
 	public function test_schema_for_image_with_caption(): void {
-		$feature_image_id = self::factory()->attachment->create_upload_object(
+		$feature_image = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/canola.jpg',
 		);								
 		wp_update_post( [
-			'ID' => $feature_image_id,
+			'ID' => $feature_image,
 			'post_excerpt' => 'Pretty canola',
 		] );
 		
-		$content_image_id = self::factory()->attachment->create_upload_object(
+		$content_image = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/waffles.jpg'
 		);
 		wp_update_post( [
-			'ID' => $content_image_id,
+			'ID' => $content_image,
 			'post_excerpt' => 'Pretty waffles',
 		] );
 
-		$content_image_url = wp_get_attachment_url( $content_image_id );
+		$content_image_url = wp_get_attachment_url( $content_image );
 		$content_image_alt = 'A plate of 3 waffles';
 		$content_image_caption = 'Waffles are still served freshly-baked every day in the greenhouse.';
 
@@ -171,14 +171,14 @@ final class Article_Images_Test extends WP_UnitTestCase {
 				</figure>
 				<!-- /wp:image -->
 				HTML,
-				$content_image_id,
+				$content_image,
 				$content_image_url,
 				$content_image_alt,
 				$content_image_caption,
 			),
 		] );
 			
-		set_post_thumbnail( $post_id, $feature_image_id );
+		set_post_thumbnail( $post_id, $feature_image );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $post_id, [] );
@@ -187,10 +187,11 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$article = $this->get_article_schema( $schema );
 		
 		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
-		
+		$content_image_id = $this->build_image_id( $post_id, $content_image_url );
+
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['url' => $content_image_url],
+			['@id' => $content_image_id],
 		], $article['image'] );
 
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
@@ -201,14 +202,14 @@ final class Article_Images_Test extends WP_UnitTestCase {
 	}
 
 	public function test_schema_for_same_image_twice(): void {
-		$feature_image_id = self::factory()->attachment->create_upload_object(
+		$feature_image = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/canola.jpg',
 		);								
 
-		$content_image_id = self::factory()->attachment->create_upload_object(
+		$content_image = self::factory()->attachment->create_upload_object(
 			DIR_TESTDATA . '/images/waffles.jpg'
 		);
-		$content_image_url = wp_get_attachment_url( $content_image_id );
+		$content_image_url = wp_get_attachment_url( $content_image );
 
 		$post_id = self::factory()->post->create( [
 			'post_content' => sprintf(
@@ -225,12 +226,12 @@ final class Article_Images_Test extends WP_UnitTestCase {
                 <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
                 <!-- /wp:image -->
                 HTML,
-				$content_image_id,
+				$content_image,
 				$content_image_url,
 			),
 		] );
 			
-		set_post_thumbnail( $post_id, $feature_image_id );
+		set_post_thumbnail( $post_id, $feature_image );
 
 		// Update object to persist meta value to indexable.
 		self::factory()->post->update_object( $post_id, [] );
@@ -239,11 +240,13 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$article = $this->get_article_schema( $schema );
 		
 		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
-		
+		$content_image_id_1 = $this->build_image_id( $post_id, $content_image_url );
+		$content_image_id_2 = $this->build_image_id( $post_id, $content_image_url, 2 );
+
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['url' => $content_image_url],
-			['url' => $content_image_url],
+			['@id' => $content_image_id_1],
+			['@id' => $content_image_id_2],
 		], $article['image'], 'Duplicate image mentioned twice' );
 
 		$ids = array_column( $schema['@graph'], '@id' );
