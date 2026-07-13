@@ -85,7 +85,6 @@ class All_Article_Images {
             $image_counts[$image->url] = 1;
             $image_ids[] = [
                 '@id' => $context->canonical . '#/schema/ImageObject/' . md5( $image->url ) . '-' . $image_counts[$image->url],
-                'url' => $image->url,
             ];
         }
         
