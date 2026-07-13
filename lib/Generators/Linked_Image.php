@@ -16,29 +16,59 @@ class Linked_Image extends Abstract_Schema_Piece {
     
     public function generate() {
         $image_pieces = [];
-        
+        $image_counts = [];
+
+        if ( isset( $this->context->blocks['core/image'] ) ) {
+        foreach ( $this->context->blocks['core/image'] as $block ) {
+            $processor = new \WP_HTML_Tag_Processor( $block['innerHTML'] );
+
+            $block_src = null;
+            while ( $processor->next_tag() ) {
+                switch ( $processor->get_tag() ) {
+                    case 'IMG':
+                        $block_src = $processor->get_attribute( 'src' );
+                        break 2;
+                }
+            }
+            
+            if ( $block_src ) {
+                $image_counts[$block_src] ??= 0;
+                ++$image_counts[$block_src];
+                
+                if ( $block_src === $this->context->main_image_url && $image_counts[$block_src] === 1 ) {
+                    continue;
+                }
+                
+                $image = $this->helpers->schema->image->generate_from_url(
+                    $this->context->canonical . '#/schema/ImageObject/' . md5( $block_src ) . '-' . $image_counts[$image->url],
+                    $image->url,
+                );
+                $image_pieces[] = $image;
+            }
+        }
+        }
+
         $images = array_filter(
             $this->get_links_repo()->find_all_by_indexable_id( $this->context->indexable->id ),
 			fn( $link ) => in_array( $link->type, [ SEO_Links::TYPE_INTERNAL_IMAGE, SEO_Links::TYPE_EXTERNAL_IMAGE ], true ),
 		);
 
-		if ( empty( $images ) ) {
-            return $image_pieces;
-		}
-
         foreach ( $images as $image ) {
-            // @TODO. Consider cases where $image->post_target_id needs comparing with $context->main_image_id
+            // @TODO. Consider cases where $image->post_target_id needs comparing with $context->main_image_id?
             if ( $image->url === $this->context->main_image_url ) {
                 continue;
             }
 
+            if ( array_key_exists( $image->url, $image_counts ) ) {
+                continue;
+            }
+
+            $image_counts[$image->url] = 1;
+            
             $image = $this->helpers->schema->image->generate_from_url(
-                $image->url,
+                $context->canonical . '#/schema/ImageObject/' . md5( $image->url ) . '-' . $image_counts[$image->url],
                 $image->url,
             );
-            
-            $image['caption'] = $this->context->blocks;
-            
             $image_pieces[] = $image;
         }
 
