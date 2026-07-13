@@ -113,8 +113,8 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['url' => $image_3_url],
 			['url' => $image_2_url],
+			['url' => $image_3_url],
 		], $article['image'] );
 		
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
