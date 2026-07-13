@@ -110,11 +110,13 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$article = $this->get_article_schema( $schema );
 		
 		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
-		
+		$image_2_id = $this->build_image_id( $post_id, $image_2_url );
+		$image_3_id = $this->build_image_id( $post_id, $image_3_url );
+
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['url' => $image_2_url],
-			['url' => $image_3_url],
+			['@id' => $image_2_id],
+			['@id' => $image_3_id],
 		], $article['image'] );
 		
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
@@ -252,6 +254,15 @@ final class Article_Images_Test extends WP_UnitTestCase {
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
+
+	private function build_image_id( int|\WP_Post $post_id, string $image_url, int $occurrence = 1 ) : string {
+		return sprintf(
+			'%s#/schema/Imageobject/%s-%d',
+			\get_permalink( $post_id ),
+			md5( $image_url ),
+			$occurrence,
+		);
+	}
 
 	private function get_schema( int $post_id, bool $debug = false ): array {
 		$this->go_to( get_permalink( $post_id ) );
