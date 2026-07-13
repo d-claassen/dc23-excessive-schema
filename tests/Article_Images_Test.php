@@ -113,8 +113,8 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['@id' => $image_3_url],
-			['@id' => $image_2_url],
+			['url' => $image_3_url],
+			['url' => $image_2_url],
 		], $article['image'] );
 		
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
@@ -188,7 +188,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['@id' => $content_image_url],
+			['url' => $content_image_url],
 		], $article['image'] );
 
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
@@ -240,8 +240,8 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['@id' => $content_image_url],
-			['@id' => $content_image_url],
+			['url' => $content_image_url],
+			['url' => $content_image_url],
 		], $article['image'], 'Duplicate image mentioned twice' );
 
 		$ids = array_column( $schema['@graph'], '@id' );
