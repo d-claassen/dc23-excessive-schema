@@ -257,7 +257,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 
 	private function build_image_id( int|\WP_Post $post_id, string $image_url, int $occurrence = 1 ) : string {
 		return sprintf(
-			'%s#/schema/Imageobject/%s-%d',
+			'%s#/schema/ImageObject/%s-%d',
 			\get_permalink( $post_id ),
 			md5( $image_url ),
 			$occurrence,
