@@ -38,6 +38,7 @@ class All_Article_Images {
         $image_ids = [];
         $image_counts = [];
 
+        if ( isset( $context->blocks['core/image'] ) ) {
         foreach ( $context->blocks['core/image'] as $block ) {
             $processor = new \WP_HTML_Tag_Processor( $block['innerHTML'] );
 
@@ -58,6 +59,7 @@ class All_Article_Images {
                     '@id' => $context->canonical . '#/schema/ImageObject/' . md5( $block_src ) . '-' . $image_counts[$block_src],
                 ];
             }
+        }
         }
 
 
