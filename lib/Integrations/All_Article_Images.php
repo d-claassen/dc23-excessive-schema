@@ -75,7 +75,7 @@ class All_Article_Images {
                 continue;
             }
 
-            if ( ! array_key_exists( $image->url, $image_counts ) ) {
+            if ( array_key_exists( $image->url, $image_counts ) ) {
                 continue;
             }
 
