@@ -23,11 +23,15 @@ class Linked_Image extends Abstract_Schema_Piece {
             $processor = new \WP_HTML_Tag_Processor( $block['innerHTML'] );
 
             $block_src = null;
+            $block_caption = null;
             while ( $processor->next_tag() ) {
                 switch ( $processor->get_tag() ) {
                     case 'IMG':
                         $block_src = $processor->get_attribute( 'src' );
-                        break 2;
+                        break;
+                    case 'FIGCAPTION':
+                        $block_caption = $processor->get_content();
+                        break;
                 }
             }
             
@@ -42,6 +46,8 @@ class Linked_Image extends Abstract_Schema_Piece {
                 $image = $this->helpers->schema->image->generate_from_url(
                     $this->context->canonical . '#/schema/ImageObject/' . md5( $block_src ) . '-' . $image_counts[$block_src],
                     $block_src,
+                    false,
+                     $block_caption,
                 );
                 $image_pieces[] = $image;
             }
