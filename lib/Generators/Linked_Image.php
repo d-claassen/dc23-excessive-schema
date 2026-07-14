@@ -31,6 +31,7 @@ class Linked_Image extends Abstract_Schema_Piece {
                         break;
                     case 'FIGCAPTION':
                         $block_caption = trim( $processor->get_modifiable_text() );
+                        die($block_caption);
                         break;
                 }
             }
