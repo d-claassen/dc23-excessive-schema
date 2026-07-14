@@ -46,7 +46,6 @@ class Linked_Image extends Abstract_Schema_Piece {
                 $image = $this->helpers->schema->image->generate_from_url(
                     $this->context->canonical . '#/schema/ImageObject/' . md5( $block_src ) . '-' . $image_counts[$block_src],
                     $block_src,
-                    false,
                      $block_caption,
                 );
                 $image_pieces[] = $image;
