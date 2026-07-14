@@ -126,18 +126,18 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$this->assertSame( $image_1_url, $keyed_graph[$primary_image]['url'], '1st image in graph as primary' );
 		$this->assertSame( 'Pretty canola', $keyed_graph[$primary_image]['caption'], 'primary image has caption' );
 		
-		$this->assertArrayHasKey( $image_2_url, $keyed_graph );
-		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['@id'], '@id is url' );
-		$this->assertSame( 'ImageObject', $keyed_graph[$image_2_url]['@type'], '@type is image' );
-		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['contentUrl'], 'contentUrl is url' );
-		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['url'], 'url is url (compatibility support)' );
-		$this->assertSame( 'Pretty waffles', $keyed_graph[$image_2_url]['caption'],	'2nd image has caption' );
+		$this->assertArrayHasKey( $image_2_id, $keyed_graph );
+		$this->assertSame( $image_2_id, $keyed_graph[$image_2_id]['@id'], '@id is page bound' );
+		$this->assertSame( 'ImageObject', $keyed_graph[$image_2_id]['@type'], '@type is image' );
+		$this->assertSame( $image_2_url, $keyed_graph[$image_2_id]['contentUrl'], 'contentUrl is url' );
+		$this->assertSame( $image_2_url, $keyed_graph[$image_2_id]['url'], 'url is url (compatibility support)' );
+		$this->assertSame( 'Pretty waffles', $keyed_graph[$image_2_id]['caption'],	'2nd image has caption' );
 
-		$this->assertArrayHasKey( $image_3_url, $keyed_graph );
-		$this->assertSame( $image_3_url, $keyed_graph[$image_3_url]['@id'], '@id is url' );
-		$this->assertSame( 'ImageObject', $keyed_graph[$image_3_url]['@type'], '@type is image' );
-		$this->assertSame( $image_3_url, $keyed_graph[$image_3_url]['contentUrl'], 'contentUrl is url' );
-		$this->assertSame( $image_3_url, $keyed_graph[$image_3_url]['url'], 'url is url (compatibility support)' );
+		$this->assertArrayHasKey( $image_3_id, $keyed_graph );
+		$this->assertSame( $image_3_id, $keyed_graph[$image_3_id]['@id'], '@id is page bound' );
+		$this->assertSame( 'ImageObject', $keyed_graph[$image_3_id]['@type'], '@type is image' );
+		$this->assertSame( $image_3_url, $keyed_graph[$image_3_id]['contentUrl'], 'contentUrl is url' );
+		$this->assertSame( $image_3_url, $keyed_graph[$image_3_id]['url'], 'url is url (compatibility support)' );
 	}
 
 	public function test_schema_for_image_with_caption(): void {
@@ -196,9 +196,9 @@ final class Article_Images_Test extends WP_UnitTestCase {
 
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
 		
-		$this->assertArrayHasKey( $content_image_url, $keyed_graph, 'content image in graph' );
-		$this->assertSame( $content_image_url, $keyed_graph[$content_image_url]['url'], '1st image in text' );
-		$this->assertSame( $content_image_caption, $keyed_graph[$content_image_url]['caption'], 'block caption in schema' );
+		$this->assertArrayHasKey( $content_image_id, $keyed_graph, 'content image in graph' );
+		$this->assertSame( $content_image_url, $keyed_graph[$content_image_id]['url'], '1st image in text' );
+		$this->assertSame( $content_image_caption, $keyed_graph[$content_image_id]['caption'], 'block caption in schema' );
 	}
 
 	public function test_schema_for_same_image_twice(): void {
@@ -249,9 +249,9 @@ final class Article_Images_Test extends WP_UnitTestCase {
 			['@id' => $content_image_id_2],
 		], $article['image'], 'Duplicate image mentioned twice' );
 
-		$ids = array_column( $schema['@graph'], '@id' );
+		$urls = array_column( $schema['@graph'], 'url' );
 		
-		$this->assertSame( 2, array_count_values($ids)[$content_image_url] );
+		$this->assertSame( 2, array_count_values($urls)[$content_image_url] );
 	}
 
 	// -------------------------------------------------------------------------
