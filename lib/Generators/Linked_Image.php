@@ -28,6 +28,8 @@ class Linked_Image extends Abstract_Schema_Piece {
                 switch ( $processor->get_tag() ) {
                     case 'IMG':
                         $block_src = $processor->get_attribute( 'src' );
+                        
+                        $block_caption .= '/'.$processor->get_tag();
                         break;
                     case 'FIGCAPTION':
                         $block_caption = trim( $processor->get_modifiable_text() );
