@@ -32,8 +32,10 @@ class Linked_Image extends Abstract_Schema_Piece {
                         $block_caption .= '/'.$processor->get_tag();
                         break;
                     case 'FIGCAPTION':
-                        $processor->next_token();
-                        $block_caption .= var_export( trim( $processor->get_modifiable_text() ), true );
+                        $processor->set_bookmark('figcaption');
+                        while( $processor->next_token() && ! ( $processor->get_tag() === 'FIGCAPTION' && $processor->is_tag_closer() ) {
+                            $block_caption .= var_export( trim( $processor->get_modifiable_text() ), true );
+                        }
                     default:
                         $block_caption .= '/'.$processor->get_tag();
                         break;
