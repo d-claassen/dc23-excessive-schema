@@ -63,14 +63,22 @@ final class Article_Images_Test extends WP_UnitTestCase {
         $image_1 = self::factory()->attachment->create_upload_object(
         	DIR_TESTDATA . '/images/canola.jpg'
         );
+								wp_update_post( [
+									'ID' => $image_1,
+									'post_excerpt' => 'Pretty canola',
+								] );
         
         $image_2 = self::factory()->attachment->create_upload_object(
         	DIR_TESTDATA . '/images/waffles.jpg'
         );
-        
-        $post_id = self::factory()->post->create( [
-    		'post_content' => sprintf(
-    			<<<'HTML'
+								wp_update_post( [
+									'ID' => $image_2,
+									'post_excerpt' => 'Pretty waffles',
+								] );
+								
+								$post_id = self::factory()->post->create( [
+									'post_content' => sprintf(
+									<<<'HTML'
                 <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
                 <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
                 <!-- /wp:image -->
@@ -102,11 +110,13 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$article = $this->get_article_schema( $schema );
 		
 		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
-		
+		$image_2_id = $this->build_image_id( $post_id, $image_2_url );
+		$image_3_id = $this->build_image_id( $post_id, $image_3_url );
+
 		$this->assertSame( [
 			['@id' => $primary_image],
-			['@id' => $image_3_url],
-			['@id' => $image_2_url],
+			['@id' => $image_2_id],
+			['@id' => $image_3_id],
 		], $article['image'] );
 		
 		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
@@ -114,23 +124,148 @@ final class Article_Images_Test extends WP_UnitTestCase {
 		$this->assertArrayHasKey( $primary_image, $keyed_graph );
 		$this->assertArrayNotHasKey( $image_1_url, $keyed_graph );
 		$this->assertSame( $image_1_url, $keyed_graph[$primary_image]['url'], '1st image in graph as primary' );
-
-		$this->assertArrayHasKey( $image_2_url, $keyed_graph );
-		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['@id'], '@id is url' );
-		$this->assertSame( 'ImageObject', $keyed_graph[$image_2_url]['@type'], '@type is image' );
-		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['contentUrl'], 'contentUrl is url' );
-		$this->assertSame( $image_2_url, $keyed_graph[$image_2_url]['url'], 'url is url (compatibility support)' );
+		$this->assertSame( 'Pretty canola', $keyed_graph[$primary_image]['caption'], 'primary image has caption' );
 		
-		$this->assertArrayHasKey( $image_3_url, $keyed_graph );
-		$this->assertSame( $image_3_url, $keyed_graph[$image_3_url]['@id'], '@id is url' );
-		$this->assertSame( 'ImageObject', $keyed_graph[$image_3_url]['@type'], '@type is image' );
-		$this->assertSame( $image_3_url, $keyed_graph[$image_3_url]['contentUrl'], 'contentUrl is url' );
-		$this->assertSame( $image_3_url, $keyed_graph[$image_3_url]['url'], 'url is url (compatibility support)' );
+		$this->assertArrayHasKey( $image_2_id, $keyed_graph );
+		$this->assertSame( $image_2_id, $keyed_graph[$image_2_id]['@id'], '@id is page bound' );
+		$this->assertSame( 'ImageObject', $keyed_graph[$image_2_id]['@type'], '@type is image' );
+		$this->assertSame( $image_2_url, $keyed_graph[$image_2_id]['contentUrl'], 'contentUrl is url' );
+		$this->assertSame( $image_2_url, $keyed_graph[$image_2_id]['url'], 'url is url (compatibility support)' );
+		$this->assertSame( 'Pretty waffles', $keyed_graph[$image_2_id]['caption'],	'2nd image has caption' );
+
+		$this->assertArrayHasKey( $image_3_id, $keyed_graph );
+		$this->assertSame( $image_3_id, $keyed_graph[$image_3_id]['@id'], '@id is page bound' );
+		$this->assertSame( 'ImageObject', $keyed_graph[$image_3_id]['@type'], '@type is image' );
+		$this->assertSame( $image_3_url, $keyed_graph[$image_3_id]['contentUrl'], 'contentUrl is url' );
+		$this->assertSame( $image_3_url, $keyed_graph[$image_3_id]['url'], 'url is url (compatibility support)' );
+	}
+
+	public function test_schema_for_image_with_caption(): void {
+		$feature_image = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/canola.jpg',
+		);								
+		wp_update_post( [
+			'ID' => $feature_image,
+			'post_excerpt' => 'Pretty canola',
+		] );
+		
+		$content_image = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/waffles.jpg'
+		);
+		wp_update_post( [
+			'ID' => $content_image,
+			'post_excerpt' => 'Pretty waffles',
+		] );
+
+		$content_image_url = wp_get_attachment_url( $content_image );
+		$content_image_alt = 'A plate of 3 waffles';
+		$content_image_caption = 'Waffles are still served freshly-baked every day in the greenhouse.';
+
+		$post_id = self::factory()->post->create( [
+			'post_content' => sprintf(
+				<<<'HTML'
+				<!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
+				<figure class="wp-block-image size-large">
+				 <img src="%2$s" alt="%3$s" class="wp-image-%1$d"/>
+					<figcaption class="wp-element-caption">%4$s</figcaption>
+				</figure>
+				<!-- /wp:image -->
+				HTML,
+				$content_image,
+				$content_image_url,
+				$content_image_alt,
+				strtr( $content_image_caption, [ 'freshly-baked' => '<b>freshly-baked</b>' ] ),
+			),
+		] );
+			
+		set_post_thumbnail( $post_id, $feature_image );
+
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $post_id, [] );
+					
+		$schema  = $this->get_schema( $post_id, true );
+		$article = $this->get_article_schema( $schema );
+		
+		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
+		$content_image_id = $this->build_image_id( $post_id, $content_image_url );
+
+		$this->assertSame( [
+			['@id' => $primary_image],
+			['@id' => $content_image_id],
+		], $article['image'] );
+
+		$keyed_graph = array_column( $schema['@graph'], null, '@id' );
+		
+		$this->assertArrayHasKey( $content_image_id, $keyed_graph, 'content image in graph' );
+		$this->assertSame( $content_image_url, $keyed_graph[$content_image_id]['url'], '1st image in text' );
+		$this->assertSame( $content_image_caption, $keyed_graph[$content_image_id]['caption'], 'block caption in schema' );
+	}
+
+	public function test_schema_for_same_image_twice(): void {
+		$feature_image = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/canola.jpg',
+		);								
+
+		$content_image = self::factory()->attachment->create_upload_object(
+			DIR_TESTDATA . '/images/waffles.jpg'
+		);
+		$content_image_url = wp_get_attachment_url( $content_image );
+
+		$post_id = self::factory()->post->create( [
+			'post_content' => sprintf(
+                <<<'HTML'
+                <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
+                <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
+                <!-- /wp:image -->
+                
+                <!-- wp:paragraph -->
+                <p>Some text between the images.</p>
+                <!-- /wp:paragraph -->
+                
+                <!-- wp:image {"id":%1$d,"sizeSlug":"large","linkDestination":"none"} -->
+                <figure class="wp-block-image size-large"><img src="%2$s" alt="" class="wp-image-%1$d"/></figure>
+                <!-- /wp:image -->
+                HTML,
+				$content_image,
+				$content_image_url,
+			),
+		] );
+			
+		set_post_thumbnail( $post_id, $feature_image );
+
+		// Update object to persist meta value to indexable.
+		self::factory()->post->update_object( $post_id, [] );
+					
+		$schema  = $this->get_schema( $post_id, true );
+		$article = $this->get_article_schema( $schema );
+		
+		$primary_image = \get_permalink( $post_id ) . '#primaryimage';
+		$content_image_id_1 = $this->build_image_id( $post_id, $content_image_url );
+		$content_image_id_2 = $this->build_image_id( $post_id, $content_image_url, 2 );
+
+		$this->assertSame( [
+			['@id' => $primary_image],
+			['@id' => $content_image_id_1],
+			['@id' => $content_image_id_2],
+		], $article['image'], 'Duplicate image mentioned twice' );
+
+		$urls = array_column( $schema['@graph'], 'url' );
+		
+		$this->assertSame( 2, array_count_values($urls)[$content_image_url] );
 	}
 
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
+
+	private function build_image_id( int|\WP_Post $post_id, string $image_url, int $occurrence = 1 ) : string {
+		return sprintf(
+			'%s#/schema/ImageObject/%s-%d',
+			\get_permalink( $post_id ),
+			md5( $image_url ),
+			$occurrence,
+		);
+	}
 
 	private function get_schema( int $post_id, bool $debug = false ): array {
 		$this->go_to( get_permalink( $post_id ) );

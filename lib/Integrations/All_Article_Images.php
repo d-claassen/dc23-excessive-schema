@@ -34,31 +34,72 @@ class All_Article_Images {
 		if ( ! $context->indexable ) {
 			return $article;
 		}
+        
+        $image_ids = [];
+        $image_counts = [];
+
+        if ( isset( $context->blocks['core/image'] ) ) {
+        foreach ( $context->blocks['core/image'] as $block ) {
+            $processor = new \WP_HTML_Tag_Processor( $block['innerHTML'] );
+
+            $block_src = null;
+            while ( $processor->next_tag() ) {
+                switch ( $processor->get_tag() ) {
+                    case 'IMG':
+                        $block_src = $processor->get_attribute( 'src' );
+                        break 2;
+                }
+            }
+            
+            if ( $block_src ) {
+                $image_counts[$block_src] ??= 0;
+                ++$image_counts[$block_src];
+                
+                if ( $block_src === $context->main_image_url && $image_counts[$block_src] === 1 ) {
+                    continue;
+                }
+                
+                $image_ids[] = [
+                    '@id' => $context->canonical . '#/schema/ImageObject/' . md5( $block_src ) . '-' . $image_counts[$block_src],
+                ];
+            }
+        }
+        }
+
 
         $images = array_filter(
             $this->get_links_repo()->find_all_by_indexable_id( $context->indexable->id ),
 			fn( $link ) => in_array( $link->type, [ SEO_Links::TYPE_INTERNAL_IMAGE, SEO_Links::TYPE_EXTERNAL_IMAGE ], true ),
 		);
 
-		if ( empty( $images ) ) {
-			return $article;
-		}
+        foreach ( $images as $image ) {
+            // @TODO. Consider cases where $image->post_target_id needs comparing with $context->main_image_id?
+            if ( $image->url === $context->main_image_url ) {
+                continue;
+            }
+
+            if ( array_key_exists( $image->url, $image_counts ) ) {
+                continue;
+            }
+
+            $image_counts[$image->url] = 1;
+            $image_ids[] = [
+                '@id' => $context->canonical . '#/schema/ImageObject/' . md5( $image->url ) . '-' . $image_counts[$image->url],
+            ];
+        }
+        
+        if ( empty( $image_ids ) ) {
+            return $article;
+        }
         
         if ( ! empty( $article['image'] ) && ! array_is_list( $article['image'] ) ) {
             // Wrap one associative array within a new array list.
             $article['image'] = [ $article['image'] ];
         }
 
-        foreach ( $images as $image ) {
-            // @TODO. Consider cases where $image->post_target_id needs comparing with $context->main_image_id
-            if ( $image->url === $context->main_image_url ) {
-                continue;
-            }
+        array_push( $article['image'], ...$image_ids );
 
-            $article['image'][] = [
-                '@id' => $image->url,
-            ];
-        }
+        // $article['image'][] = $context->blocks['core/image'];
 
         return $article;
     }
