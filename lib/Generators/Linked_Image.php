@@ -23,7 +23,7 @@ class Linked_Image extends Abstract_Schema_Piece {
             $processor = new \WP_HTML_Tag_Processor( $block['innerHTML'] );
 
             $block_src = null;
-            $block_caption = null;
+            $block_caption = '';
             while ( $processor->next_tag() ) {
                 switch ( $processor->get_tag() ) {
                     case 'IMG':
@@ -31,7 +31,8 @@ class Linked_Image extends Abstract_Schema_Piece {
                         break;
                     case 'FIGCAPTION':
                         $block_caption = trim( $processor->get_modifiable_text() );
-                        var_dump($block_caption);
+                    default:
+                        $block_caption .= '/'.$processor->get_tag();
                         break;
                 }
             }
