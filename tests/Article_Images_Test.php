@@ -174,7 +174,7 @@ final class Article_Images_Test extends WP_UnitTestCase {
 				$content_image,
 				$content_image_url,
 				$content_image_alt,
-				strtr( $content_image_caption, 'freshly-baked', '<b>freshly-baked</b>' ),
+				strtr( $content_image_caption, [ 'freshly-baked' => '<b>freshly-baked</b>' ] ),
 			),
 		] );
 			
