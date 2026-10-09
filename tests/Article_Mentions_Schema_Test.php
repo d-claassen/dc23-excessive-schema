@@ -81,7 +81,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 		] );
 		
 		// Update object to persist meta value to indexable.
-		self::factory()->post->update_object( $target_id, [] );
+		self::factory()->category->update_object( $target_id, [] );
 		self::factory()->post->update_object( $source_id, [] );
 
 		$this->go_to( \get_permalink( $source_id ) );
@@ -206,7 +206,7 @@ class Article_Mentions_Schema_Test extends \WP_UnitTestCase {
 			'post_category' => [ $category_id ],
 			'post_date'     => '2024-03-15 10:00:00',
 		] );
-		self::factory()->post->update_object( $this->user_id, [] );
+		self::factory()->user->update_object( $this->user_id, [] );
 
 		$category_url     = get_category_link( $category_id );
 		$author_url       = get_author_posts_url( $this->user_id );
