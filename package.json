@@ -30,7 +30,7 @@
     "lib/**"
   ],
   "devDependencies": {
-    "@wordpress/env": "^11.2.0",
+    "@wordpress/env": "^12.0.0",
     "@wordpress/scripts": "^37.0.0"
   },
   "scripts": {
